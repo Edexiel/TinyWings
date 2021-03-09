@@ -1,0 +1,11 @@
+- présentation succincte du gameplay et des contrôles de votre jeu
+
+- quelles sont les particularités techniques de votre gameplay ?
+
+- quelles en sont les classes de code principales?
+
+- quelles sont les limitations de votre implémentation?
+
+- quels sont les bugs connus?
+
+- quelques pistes d’amélioration ou d’optimisation du jeu proposez-vous ?

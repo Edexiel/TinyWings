@@ -1,4 +1,5 @@
 #include "raylib.h"
+#include <cstdio>
 
 int main(void)
 {
@@ -9,7 +10,7 @@ int main(void)
 
     InitWindow(screenWidth, screenHeight, "TinyWings");
 
-    SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
+    SetTargetFPS(0);
     //--------------------------------------------------------------------------------------
 
     // Main game loop
@@ -27,7 +28,10 @@ int main(void)
         ClearBackground(RAYWHITE);
 
         DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
-
+        //char* fps;
+        //sprintf(fps,"FPS : %i",GetFPS());
+        //DrawText(fps, 10, 10, 20,LIGHTGRAY);
+        DrawFPS(10,20);
         EndDrawing();
         //----------------------------------------------------------------------------------
     }
