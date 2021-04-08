@@ -44,7 +44,7 @@ if (NOT raylib_FOUND)
 endif()
 
 
-add_executable(${PROJECT_NAME} src/main.cpp src/Rectangle.cpp)
+add_executable(${PROJECT_NAME} src/main.cpp src/Rectangle.cpp "include/SinusFunction.hpp")
 
 target_include_directories (${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
