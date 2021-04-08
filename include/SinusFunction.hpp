@@ -7,10 +7,8 @@ namespace Tinywings
 {
 	struct SinusFunction
 	{
-	public:
 		inline static std::vector<float> Create(float x1, float x2, float y1, float y2, unsigned int n, float precision) noexcept;
 		inline static std::vector<float> Create(const Vector2& p1, const Vector2& p2, unsigned int n, float precision) noexcept;
-
 	};
 
 	std::vector<float> SinusFunction::Create(float x1, float x2, float y1, float y2, unsigned int n, float precision) noexcept
@@ -46,10 +44,6 @@ namespace Tinywings
 		};
 
 		std::vector<float> table;
-		//for (size_t i = 0; i + x1 <= x2; i++)
-		//{
-		//	table.push_back(function(x1 + i));
-		//}
 		float i = 0;
 		while (i + x1 <= x2)
 		{

@@ -14,8 +14,8 @@ int main(void)
 {
     // Initialization
     //--------------------------------------------------------------------------------------
-    const int screenWidth   = 1920;
-    const int screenHeight  = 1080;
+    const int screenWidth   = 1024;
+    const int screenHeight  = 720;
 
     InitWindow(screenWidth, screenHeight, "TinyWings");
 
@@ -25,8 +25,8 @@ int main(void)
     float x2 = screenWidth;
     float y1 = 0;
     float y2 = screenHeight;
-    float precision = 1;
-    unsigned int n = 9;
+    float precision = 10;
+    unsigned int n = 1;
     std::vector<float> table = Tinywings::SinusFunction::Create(x1, x2,y1,y2,n,precision);
 
     // Main game loop
@@ -43,10 +43,6 @@ int main(void)
 
         ClearBackground(RAYWHITE);
         DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
-        //for (size_t i = 0; i + x1 < x2; i++)
-        //{
-        //    DrawLine(x1+i,table[i],x1+i+1, table[i + 1], BLACK);
-        //}
         drawFunction(table,x1,precision);
 
         //DrawLine(0, 0, 1000, 1000, BLACK);
