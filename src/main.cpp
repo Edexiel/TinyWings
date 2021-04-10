@@ -1,6 +1,7 @@
 #include "raylib.h"
 #include <cstdio>
 #include <SinusFunction.hpp>
+#include <PolyFunction.hpp>
 
 void drawFunction(const std::vector<float>& table, float x1, float precision) noexcept
 {
@@ -25,9 +26,10 @@ int main(void)
     float x2 = screenWidth;
     float y1 = 0;
     float y2 = screenHeight;
-    float precision = 10;
+    float precision = 1;
     unsigned int n = 1;
-    std::vector<float> table = Tinywings::SinusFunction::Create(x1, x2,y1,y2,n,precision);
+    std::vector<float> table    = Tinywings::SinusFunction::Create(x1, x2, y1, y2, n, precision);
+    std::vector<float> table2   = Tinywings::PolyFunction::Create(x1, x2, y1, y2, precision);
 
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
@@ -43,7 +45,7 @@ int main(void)
 
         ClearBackground(RAYWHITE);
         DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
-        drawFunction(table,x1,precision);
+        drawFunction(table2,x1,precision);
 
         //DrawLine(0, 0, 1000, 1000, BLACK);
         //char* fps;
