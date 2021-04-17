@@ -9,22 +9,19 @@
 
 namespace Tinywings
 {
-    enum class F_TYPE
-    {
-        E_SIN,
-        E_POLY,
-        E_ARC,
-        E_HYP,
+enum class F_TYPE
+{
+    E_SIN,
+    E_POLY,
+    E_ARC,
+    E_HYP,
+};
 
-    };
+struct Rectangle
+{
+    Vector2 p1;
+    Vector2 p2;
+};
+} // namespace Tinywings
 
-    struct Rectangle
-    {
-        Vector2 p1;
-        Vector2 p2;
-    };
-}
-
-
-
-#endif //TINYWINGS_RECTANGLE_HPP
+#endif // TINYWINGS_RECTANGLE_HPP
