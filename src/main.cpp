@@ -1,37 +1,53 @@
 #include "raylib.h"
-#include <cstdio>
-
-int main(void)
+#include "Player.hpp"
+#include "Map.hpp"
+int main()
 {
-    // Initialization
-    //--------------------------------------------------------------------------------------
-    const int screenWidth = 800;
-    const int screenHeight = 450;
+    Vector2 screenSize{1024, 720};
 
-    InitWindow(screenWidth, screenHeight, "TinyWings");
 
+    //SetConfigFlags(FLAG_MSAA_4X_HINT);
+
+    InitWindow((int) screenSize.x, (int) screenSize.y, "TinyWings");
     SetTargetFPS(0);
+
+
+    Player player{{screenSize.x / 2, screenSize.y / 2.5f}, 0.25};
+    Camera2D camera{0};
+    camera.target = player.GetPosition();
+    camera.offset = {screenSize.x / 2.0f - (screenSize.x / 5.f), screenSize.y / 2.0f - (screenSize.y / 5.f)};
+    camera.rotation = 0.0f;
+    camera.zoom = 1.f;
+
+    Map map{};
     //--------------------------------------------------------------------------------------
 
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
+        float deltaTime = GetFrameTime();
+
         // Update
         //----------------------------------------------------------------------------------
-        // TODO: Update your variables here
+        player.Update(deltaTime);
         //----------------------------------------------------------------------------------
 
         // Draw
         //----------------------------------------------------------------------------------
         BeginDrawing();
 
-        ClearBackground(RAYWHITE);
+        ClearBackground(SKYBLUE);
 
-        DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
-        //char* fps;
-        //sprintf(fps,"FPS : %i",GetFPS());
-        //DrawText(fps, 10, 10, 20,LIGHTGRAY);
-        DrawFPS(10,20);
+        {
+            DrawText("Score :",10,screenSize.y-50,50,RED);
+            BeginMode2D(camera);
+            //draw game
+            player.Draw();
+            map.DrawDebug();
+            EndMode2D();
+        }
+
+        DrawFPS(10, 20);
         EndDrawing();
         //----------------------------------------------------------------------------------
     }
