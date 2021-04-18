@@ -1,5 +1,6 @@
 #include "raylib.h"
 #include <EllipticFunction.hpp>
+#include <HyperbolicFunction.hpp>
 #include <PolyFunction.hpp>
 #include <SinusFunction.hpp>
 #include <cstdio>
@@ -23,15 +24,35 @@ int main(void)
 
     SetTargetFPS(0);
     //--------------------------------------------------------------------------------------
-    float              x1        = 0;
-    float              x2        = screenWidth;
-    float              y1        = screenHeight;
-    float              y2        = 0;
-    float              precision = 1;
-    unsigned int       n         = 1;
-    std::vector<float> table     = Tinywings::SinusFunction::Create(x1, x2, y1, y2, n, precision);
-    std::vector<float> table2    = Tinywings::PolyFunction::Create(x1, x2, y1, y2, precision);
-    std::vector<float> table3    = Tinywings::EllipticFunction::Create(x1, x2, y1, y2, precision);
+    float        x1        = 0;
+    float        x2        = 300;
+    float        y1        = 100;
+    float        y2        = 700;
+    float        precision = 1;
+    unsigned int n         = 3;
+
+    std::vector<float> table = Tinywings::SinusFunction::Create(x1, x2, y1, y2, n, precision);
+
+    x1 = x2;
+    x2 = 550;
+    y1 = y2;
+    y2 = 400;
+
+    std::vector<float> table2 = Tinywings::PolyFunction::Create(x1, x2, y1, y2, precision);
+
+    x1 = x2;
+    x2 = 840;
+    y1 = y2;
+    y2 = 50;
+
+    std::vector<float> table3 = Tinywings::EllipticFunction::Create(x1, x2, y1, y2, precision);
+
+    x1 = x2;
+    x2 = 1024;
+    y1 = y2;
+    y2 = 710;
+
+    std::vector<float> table4 = Tinywings::HyperbolicFunction::Create(x1, x2, y1, y2, precision);
 
     // Main game loop
     while (!WindowShouldClose()) // Detect window close button or ESC key
@@ -46,14 +67,17 @@ int main(void)
         BeginDrawing();
 
         ClearBackground(RAYWHITE);
-        DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
-        drawFunction(table3, x1, precision);
+        // DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
 
-        // DrawLine(0, 0, 1000, 1000, BLACK);
-        // char* fps;
-        // sprintf(fps,"FPS : %i",GetFPS());
-        // DrawText(fps, 10, 10, 20,LIGHTGRAY);
+        drawFunction(table, 0, precision);
+        drawFunction(table2, 300, precision);
+        drawFunction(table3, 550, precision);
+        drawFunction(table4, 840, precision);
+
+        // drawFunction(table4, x1, precision);
+
         DrawFPS(10, 20);
+
         EndDrawing();
         //----------------------------------------------------------------------------------
     }
