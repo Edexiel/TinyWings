@@ -3,6 +3,7 @@
 //
 
 #include "Player.hpp"
+#include "raymath.h"
 
 Player::Player(const Vector2 &position,float scale) : _position(position),_scale(scale)
 {
@@ -12,7 +13,8 @@ Player::Player(const Vector2 &position,float scale) : _position(position),_scale
 
 void Player::Update(float deltaTime)
 {
-
+    _velocity = Vector2Add(_velocity,Vector2{0,(_gravity)*deltaTime});
+    _position.y += (_velocity.y*deltaTime);
 }
 
 void Player::Draw()

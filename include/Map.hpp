@@ -8,6 +8,7 @@
 #include "raylib.h"
 #include <deque>
 #include <vector>
+#include "common.hpp"
 
 #define MAX_ZONES 100
 #define INIT_ZONES_NB 50
@@ -16,54 +17,60 @@
 #define ZONE_MIN_HEIGHT 15// in fraction of the screen , 10 -> 1/10 height
 #define ZONE_MAX_HEIGHT 10 // in fraction of the screen , 10 -> 1/10 height
 
-enum class F_TYPE
+namespace Tinywings
 {
-    E_SIN,
-    E_POLY,
-    E_ARC,
-    E_HYP,
+    enum class F_TYPE
+    {
+        E_SIN,
+        E_POLY,
+        E_ELLI,
+        E_HYP,
 
-};
+    };
 
-struct Zone
-{
-    std::vector<Vector2> points;
+    struct Zone
+    {
+        std::vector<float> points;
 
-    F_TYPE type;
-    bool sens; // true: ascent; false: descent
-    Vector2 p1;
-    Vector2 p2;
+        F_TYPE type;
+        bool sens; // true: ascent; false: descent
+        Vector2 p1;
+        Vector2 p2;
 
-    Zone(F_TYPE, Vector2 &start,bool orientation);
+        Zone(F_TYPE, Vector2 &start, bool orientation);
 
-    Rectangle GetRectangle() const;
+        Rectangle GetRectangle() const;
 
-    void Draw();
+        void Draw();
 
-    void DrawZone() const;
-};
+        void DrawZone() const;
+    };
 
-class Map
-{
-private:
-    std::deque<Zone> _zones;
-    F_TYPE _currentType;
-public:
+    class Map
+    {
+    private:
+        std::deque<Zone> _zones;
+        F_TYPE _currentType;
 
-    Map();
 
-    void Update();
+    public:
+        std::vector<float> _allPoints;
 
-    void DrawDebug();
+        Map();
 
-    void Draw();
+        void Update();
 
-    void AddZone();
+        void DrawDebug();
 
-    F_TYPE GetCurrentType();
+        void CreateBuffer();
 
-    void SetCurrentType(F_TYPE currentType);
-};
+        void AddZone();
 
+        F_TYPE GetCurrentType();
+
+        void SetCurrentType(F_TYPE currentType);
+    };
+
+}
 
 #endif //TINYWINGS_MAP_HPP
