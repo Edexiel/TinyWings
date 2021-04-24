@@ -5,6 +5,8 @@
 #include <SinusFunction.hpp>
 #include <cstdio>
 
+using namespace Tinywings;
+
 void drawFunction(const std::vector<float>& table, float x1, float precision) noexcept
 {
     for (float i = 0; i < table.size() - 1; i++)
@@ -31,28 +33,32 @@ int main(void)
     float        precision = 1;
     unsigned int n         = 3;
 
-    std::vector<float> table = Tinywings::SinusFunction::Create(x1, x2, y1, y2, n, precision);
+    std::vector<float> table = SinusFunction::Create(x1, x2, y1, y2, n, precision);
 
     x1 = x2;
     x2 = 550;
     y1 = y2;
     y2 = 400;
 
-    std::vector<float> table2 = Tinywings::PolyFunction::Create(x1, x2, y1, y2, precision);
+    std::vector<float> table2 = PolyFunction::Create(x1, x2, y1, y2, precision);
 
     x1 = x2;
     x2 = 840;
     y1 = y2;
     y2 = 50;
 
-    std::vector<float> table3 = Tinywings::EllipticFunction::Create(x1, x2, y1, y2, precision);
+    EllipticFunction ellipticFunc;
+
+    std::vector<float> table3 = ellipticFunc.Create(x1, x2, y1, y2, precision);
 
     x1 = x2;
     x2 = 1024;
     y1 = y2;
     y2 = 710;
 
-    std::vector<float> table4 = Tinywings::HyperbolicFunction::Create(x1, x2, y1, y2, precision);
+    HyperbolicFunction hyperFunc;
+
+    std::vector<float> table4 = hyperFunc.Create(x1, x2, y1, y2, precision);
 
     // Main game loop
     while (!WindowShouldClose()) // Detect window close button or ESC key
