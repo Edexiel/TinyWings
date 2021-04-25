@@ -103,9 +103,10 @@ void Map::AddZone()
     if (_zones.empty())
     {
         const int height = GetScreenHeight();
-        Vector2 start{0, (float) (height - (height / ZONE_MIN_HEIGHT))};
+        Vector2 start{0, (float) (height - (height / ZONE_MIN_HEIGHT)*2)};
+
         _zones.emplace_back(_currentType, start, (bool) GetRandomValue(0, 1));
-        _zones.emplace_back(_currentType, start, (bool) GetRandomValue(0, 1));
+        _zones.emplace_back(_currentType, _zones.back().p2, (bool) GetRandomValue(0, 1));
         return;
     }
 

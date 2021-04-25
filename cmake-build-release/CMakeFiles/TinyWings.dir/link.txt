@@ -1,1 +1,0 @@
-/usr/bin/c++ -O3 -DNDEBUG -rdynamic CMakeFiles/TinyWings.dir/src/main.cpp.o CMakeFiles/TinyWings.dir/src/Player.cpp.o CMakeFiles/TinyWings.dir/src/Map.cpp.o -o TinyWings  _deps/raylib-build/src/libraylib.a -lm -lpthread -lGL -lGLU -lm -lpthread -lGL -lGLU _deps/raylib-build/src/external/glfw/src/libglfw3.a -lrt -lm -ldl -lX11 -lpthread 

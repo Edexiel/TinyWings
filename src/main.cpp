@@ -30,7 +30,7 @@ int main()
     camera.target = player.GetPosition();
     camera.offset = {screenSize.x / 2.0f - (screenSize.x / 5.f), screenSize.y / 2.0f - (screenSize.y / 5.f)};
     camera.rotation = 0.0f;
-    camera.zoom = 1.f;
+    camera.zoom = 0.50f;
 
     Map map{};
     //--------------------------------------------------------------------------------------
@@ -54,19 +54,21 @@ int main()
         {
             BeginShaderMode(shaderMap);
             map.CreateBuffer();
-//            for (int i = 0; i < 100; ++i) {
+//            for (int i = 0; i < 1000; ++i)
+//            {
 //                printf("%f ",map._allPoints[i]);
 //            }
             //ClearBackground(BLANK);
-            SetShaderValueV(shaderMap,mapLoc,map._allPoints.data(),UNIFORM_FLOAT,100);
+            SetShaderValueV(shaderMap,mapLoc,map._allPoints.data(),UNIFORM_FLOAT,1000);
             SetShaderValue(shaderMap,steppingLoc,&stepping,UNIFORM_INT);
             DrawTextureRec(mapTexture.texture,
                            (Rectangle) {0, 0, (float) mapTexture.texture.width, (float) -mapTexture.texture.height},
                            (Vector2) {0, 0}, BLANK);
             EndShaderMode();
 
-
+            map.DrawDebug();
             BeginMode2D(camera);
+
             //draw game
             player.Draw();
             EndMode2D();

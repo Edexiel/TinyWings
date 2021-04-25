@@ -11,7 +11,7 @@
 #include "common.hpp"
 
 #define MAX_ZONES 100
-#define INIT_ZONES_NB 50
+#define INIT_ZONES_NB 100
 #define ZONE_MIN_WIDTH 15// in fraction of the screen , 10 -> 1/10 width
 #define ZONE_MAX_WIDTH 5// in fraction of the screen , 10 -> 1/10 width
 #define ZONE_MIN_HEIGHT 15// in fraction of the screen , 10 -> 1/10 height

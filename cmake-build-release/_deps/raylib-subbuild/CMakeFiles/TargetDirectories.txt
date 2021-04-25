@@ -1,3 +1,0 @@
-/home/lemome/Projets/tinywings/cmake-build-release/_deps/raylib-subbuild/CMakeFiles/rebuild_cache.dir
-/home/lemome/Projets/tinywings/cmake-build-release/_deps/raylib-subbuild/CMakeFiles/edit_cache.dir
-/home/lemome/Projets/tinywings/cmake-build-release/_deps/raylib-subbuild/CMakeFiles/raylib-populate.dir
