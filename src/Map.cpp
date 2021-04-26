@@ -56,10 +56,10 @@ void Zone::DrawZone() const
 
     DrawRectangleLines((int) p1.x, (int) p1.y, (int) (p2.x - p1.x), (int) (p2.y - p1.y), sens ? RED : GREEN);
 
-    for (int i = 0; i < heightPoints.size()-1; ++i)
-    {
-        DrawLine(p1.x + i, heightPoints[i], p1.x + (i + 1.f), heightPoints[i + 1.f], BLACK);
-    }
+//    for (int i = 0; i < heightPoints.size()-1; ++i)
+//    {
+//        DrawLine(p1.x + i, heightPoints[i], p1.x + (i + 1.f), heightPoints[i + 1.f], BLACK);
+//    }
 }
 
 //void Zone::DrawZone() const
