@@ -1,17 +1,17 @@
 #version 330
 
-#ifdef GL_ES
-precision mediump float;
-#endif
+// #ifdef GL_ES
+// precision mediump float;
+// #endif
 
-in vec2 VertexTexCoord;
-in vec4 VertexColor;
+// in vec2 VertexTexCoord;
+// in vec4 VertexColor;
 
 uniform int u_stepping;
-uniform float u_map[3000];
+uniform float u_map[1000];
 
 // Output fragment color
-//out vec4 gl_FragColor;
+out vec4 gl_FragColor;
 
 // NOTE: Add here your custom variables
 
@@ -69,7 +69,7 @@ void main()
         gl_FragColor = vec4(0.9, 0.1, 0.1, 1);
     }
 
-    step()
+    //step()
 
 
 }
