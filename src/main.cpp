@@ -1,7 +1,12 @@
+
+
 #include "raylib.h"
+#include "imgui.h"
+#include "rlImGui.h"
+
 #include "Player.hpp"
 #include "Map.hpp"
-#include <cstdio>
+
 
 
 using namespace Tinywings;
@@ -24,17 +29,17 @@ int main()
 
     const int stepping = 1;
 
-    Player player{{screenSize.x / 2, screenSize.y / 2.5f}, 0.25};
+    Player player{{screenSize.x / 2.f, screenSize.y / 3.f}, 0.25};
 
     Camera2D camera{0};
-    camera.target = player.GetPosition();
-    camera.offset = {screenSize.x / 2.0f - (screenSize.x / 5.f), screenSize.y / 2.0f - (screenSize.y / 5.f)};
+    camera.target = Vector2 {0,0};
+    camera.offset = Vector2{0,0};//{screenSize.x / 2.0f - (screenSize.x / 5.f), screenSize.y / 2.0f - (screenSize.y / 5.f)};
     camera.rotation = 0.0f;
-    camera.zoom = 0.50f;
+    camera.zoom = 1.f;
 
     Map map{};
     //--------------------------------------------------------------------------------------
-
+    SetupRLImGui(true);
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
@@ -52,34 +57,37 @@ int main()
         ClearBackground(SKYBLUE);
 
         {
-            BeginShaderMode(shaderMap);
-            map.CreateBuffer();
-//            for (int i = 0; i < 1000; ++i)
-//            {
-//                printf("%f ",map._allPoints[i]);
-//            }
-            //ClearBackground(BLANK);
-            SetShaderValueV(shaderMap,mapLoc,map._allPoints.data(),UNIFORM_FLOAT,1000);
-            SetShaderValue(shaderMap,steppingLoc,&stepping,UNIFORM_INT);
-            DrawTextureRec(mapTexture.texture,
-                           (Rectangle) {0, 0, (float) mapTexture.texture.width, (float) -mapTexture.texture.height},
-                           (Vector2) {0, 0}, BLANK);
-            EndShaderMode();
-
-            map.DrawDebug();
             BeginMode2D(camera);
 
+
+            BeginShaderMode(shaderMap);
+            map.CreateBuffer();
+            SetShaderValueV(shaderMap,mapLoc,map._allPoints.data(),SHADER_UNIFORM_FLOAT,1000);
+            SetShaderValue(shaderMap,steppingLoc,&stepping,SHADER_UNIFORM_INT);
+
+            DrawTextureRec(mapTexture.texture,
+                           (Rectangle) {0, 0, (float) mapTexture.texture.width, (float) mapTexture.texture.height},
+                           GetScreenToWorld2D(Vector2 {0, (screenSize.y -(screenSize.y/1.f))},camera), BLANK);
+            EndShaderMode();
+
+
+            map.DrawDebug();
             //draw game
+
             player.Draw();
             EndMode2D();
 
         }
+        DrawCircle(0.f, 0.f,10.f,WHITE);
+        DrawCircle(0.f, screenSize.y,10.f,BLUE);
+        DrawCircle(screenSize.x, 0.f,10.f,RED);
         // Draw UI
         {
             DrawText("Score :", 10, screenSize.y - 50, 50, RED);
             DrawFPS(10, 20);
         }
-
+        BeginRLImGui();
+        EndRLImGui();
 
         EndDrawing();
 
@@ -88,6 +96,7 @@ int main()
 
     // De-Initialization
     //--------------------------------------------------------------------------------------
+    ShutdownRLImGui();
     UnloadShader(shaderMap);
     CloseWindow();        // Close window and OpenGL context
     //--------------------------------------------------------------------------------------

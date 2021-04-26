@@ -30,7 +30,7 @@ namespace Tinywings
 
     struct Zone
     {
-        std::vector<float> points;
+        std::vector<float> heightPoints;
 
         F_TYPE type;
         bool sens; // true: ascent; false: descent

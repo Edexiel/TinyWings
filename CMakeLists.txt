@@ -28,7 +28,7 @@ if (NOT raylib_FOUND)
 
   FetchContent_Declare(
     raylib
-    URL https://github.com/raysan5/raylib/archive/3.5.0.zip
+    URL https://github.com/raysan5/raylib/archive/3.7.0.zip
   )
 
   FetchContent_GetProperties(raylib)
@@ -44,8 +44,20 @@ if (NOT raylib_FOUND)
 endif()
 
 
-add_executable(${PROJECT_NAME} src/main.cpp src/Player.cpp src/Map.cpp include/Functions.hpp include/common.hpp)
+add_executable(${PROJECT_NAME}
+        src/main.cpp
+        src/Player.cpp
+        src/Map.cpp
+        include/Functions.hpp
+        include/common.hpp
+        libraries/ImGui/imgui.cpp
+        libraries/ImGui/imgui_demo.cpp
+        libraries/ImGui/imgui_draw.cpp
+        libraries/ImGui/imgui_widgets.cpp
+        libraries/ImGui/imgui_tables.cpp
+        libraries/rlImGui/rlImGui.cpp
+        )
 
-target_include_directories (${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_include_directories (${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/libraries/rlImGui ${CMAKE_CURRENT_SOURCE_DIR}/libraries/ImGui)
 
 target_link_libraries(${PROJECT_NAME} raylib)
