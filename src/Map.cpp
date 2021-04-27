@@ -4,7 +4,7 @@
 using namespace Tinywings;
 /*____________________ZONE______________________________*/
 
-Zone::Zone(F_TYPE functionType, Vector2 &start, bool orientation)
+Zone::Zone(F_TYPE functionType, Vector2 &start, bool orientation,float precision)
 {
     sens = orientation;
 
@@ -28,13 +28,13 @@ Zone::Zone(F_TYPE functionType, Vector2 &start, bool orientation)
     switch (functionType) {
 
         case F_TYPE::E_SIN:
-            heightPoints = SinusFunction::Create(p1, p2, 1, 1);
+            heightPoints = SinusFunction::Create(p1, p2, 1, precision);
             break;
         case F_TYPE::E_POLY:
-            heightPoints = PolyFunction::Create(p1, p2, 1);
+            heightPoints = PolyFunction::Create(p1, p2, precision);
             break;
         case F_TYPE::E_ELLI:
-            heightPoints = EllipticFunction::Create(p1, p2, 1);
+            heightPoints = EllipticFunction::Create(p1, p2, precision);
             break;
         case F_TYPE::E_HYP:
             break;
@@ -76,11 +76,10 @@ Rectangle Zone::GetRectangle() const
 
 /*_______________________ MAP_______________________________*/
 
-Map::Map()
+Map::Map(float precision):_precision{precision}
 {
     _currentType = F_TYPE::E_SIN;
-    _allPoints.reserve(2000);
-
+    _allPoints.reserve(1500);
 
     for (int i = 0; i < INIT_ZONES_NB; ++i) {
         AddZone();
@@ -106,7 +105,7 @@ void Map::CreateBuffer()
     for (Zone &item : _zones)
     {
         _allPoints.insert(_allPoints.end(), item.heightPoints.begin(), item.heightPoints.end());
-        if(_allPoints.size()>=1000)
+        if(_allPoints.size()>=2000)
             return;
     }
 }
@@ -118,8 +117,8 @@ void Map::AddZone()
         const int height = GetScreenHeight();
         Vector2 start{0, (float)(height -((float)height/3.f))};
 
-        _zones.emplace_back(_currentType, start, (bool) GetRandomValue(0, 1));
-        _zones.emplace_back(_currentType, _zones.back().p2, (bool) GetRandomValue(0, 1));
+        _zones.emplace_back(_currentType, start, (bool) GetRandomValue(0, 1),_precision);
+        _zones.emplace_back(_currentType, _zones.back().p2, (bool) GetRandomValue(0, 1),_precision);
         return;
     }
 
@@ -129,7 +128,7 @@ void Map::AddZone()
     if (_zones[size - 1].sens && orientation)
         orientation = !orientation;
 
-    _zones.emplace_back(_currentType, _zones.back().p2, orientation);
+    _zones.emplace_back(_currentType, _zones.back().p2, orientation,_precision);
 }
 
 F_TYPE Map::GetCurrentType()
