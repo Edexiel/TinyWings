@@ -57,8 +57,9 @@ int main()
         ClearBackground(SKYBLUE);
 
         {
-            BeginMode2D(camera);
 
+
+            BeginMode2D(camera);
 
             BeginShaderMode(shaderMap);
             map.CreateBuffer();
@@ -70,17 +71,17 @@ int main()
                            GetScreenToWorld2D(Vector2 {0, (screenSize.y -(screenSize.y/1.f))},camera), BLANK);
             EndShaderMode();
 
-
             map.DrawDebug();
             //draw game
 
             player.Draw();
+            DrawCircle(0.f, 0.f,10.f,WHITE);
+            DrawCircle(0.f, screenSize.y,10.f,BLUE);
+            DrawCircle(screenSize.x, 0.f,10.f,RED);
             EndMode2D();
 
         }
-        DrawCircle(0.f, 0.f,10.f,WHITE);
-        DrawCircle(0.f, screenSize.y,10.f,BLUE);
-        DrawCircle(screenSize.x, 0.f,10.f,RED);
+
         // Draw UI
         {
             DrawText("Score :", 10, screenSize.y - 50, 50, RED);
