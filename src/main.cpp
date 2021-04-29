@@ -1,89 +1,127 @@
+#include "imgui.h"
 #include "raylib.h"
-#include <EllipticFunction.hpp>
-#include <HyperbolicFunction.hpp>
-#include <PolyFunction.hpp>
-#include <SinusFunction.hpp>
-#include <cstdio>
+#include "rlImGui.h"
 
-void drawFunction(const std::vector<float>& table, float x1, float precision) noexcept
+#include "Map.hpp"
+#include "Player.hpp"
+
+using namespace Tinywings;
+
+void drawaxis()
 {
-    for (float i = 0; i < table.size() - 1; i++)
-    {
-        DrawLine(x1 + i * precision, table[i], x1 + (i + 1.f) * precision, table[i + 1.f], BLACK);
-    }
+    DrawCircle(0.f, 0.f, 10.f, WHITE);
+    DrawCircle(0.f, GetScreenHeight(), 10.f, BLUE);
+    DrawCircle(GetScreenWidth(), 0.f, 10.f, RED);
 }
 
-int main(void)
+int main()
 {
-    // Initialization
-    //--------------------------------------------------------------------------------------
-    const int screenWidth  = 1024;
-    const int screenHeight = 720;
+    Vector2 screenSize{1280, 720};
 
-    InitWindow(screenWidth, screenHeight, "TinyWings");
+    // SetConfigFlags(FLAG_MSAA_4X_HINT);
 
+    InitWindow((int) screenSize.x, (int) screenSize.y, "TinyWings");
     SetTargetFPS(0);
-    //--------------------------------------------------------------------------------------
-    float        x1        = 0;
-    float        x2        = 300;
-    float        y1        = 100;
-    float        y2        = 700;
-    float        precision = 1;
-    unsigned int n         = 3;
 
-    std::vector<float> table = Tinywings::SinusFunction::Create(x1, x2, y1, y2, n, precision);
+    RenderTexture2D mapTexture = LoadRenderTexture((int)screenSize.x,(int)screenSize.y);
+    Shader shaderMap = LoadShader(nullptr, TextFormat("../assets/shader/map.fs", GLSL_VERSION));
 
-    x1 = x2;
-    x2 = 550;
-    y1 = y2;
-    y2 = 400;
+    int mapLoc = GetShaderLocation(shaderMap, "u_map");
+    int precisionLoc = GetShaderLocation(shaderMap, "u_precision");
+    int resolutionLoc = GetShaderLocation(shaderMap, "u_resolution");
 
-    std::vector<float> table2 = Tinywings::PolyFunction::Create(x1, x2, y1, y2, precision);
+    float precision = 4.f;
 
-    x1 = x2;
-    x2 = 840;
-    y1 = y2;
-    y2 = 50;
+    Player player{{screenSize.x / 2.f, screenSize.y / 3.f}, 0.25};
 
-    std::vector<float> table3 = Tinywings::EllipticFunction::Create(x1, x2, y1, y2, precision);
+    Camera2D camera{0};
+    camera.target = {0, 0};
+    camera.offset = Vector2{0, 0};
+    camera.rotation = 0.0f;
+    camera.zoom = 1.f;
 
-    x1 = x2;
-    x2 = 1024;
-    y1 = y2;
-    y2 = 710;
+    Map map{precision,&camera};
 
-    std::vector<float> table4 = Tinywings::HyperbolicFunction::Create(x1, x2, y1, y2, precision);
+    SetupRLImGui(true);
 
-    // Main game loop
     while (!WindowShouldClose()) // Detect window close button or ESC key
     {
-        // Update
-        //----------------------------------------------------------------------------------
-        // TODO: Update your variables here
-        //----------------------------------------------------------------------------------
+        float deltaTime = GetFrameTime();
 
-        // Draw
-        //----------------------------------------------------------------------------------
+        player.Update(deltaTime);
+
         BeginDrawing();
 
-        ClearBackground(RAYWHITE);
-        // DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
+        ClearBackground(SKYBLUE);
+        {
+            //BeginTextureMode(mapTexture2);
 
-        drawFunction(table, 0, precision);
-        drawFunction(table2, 300, precision);
-        drawFunction(table3, 550, precision);
-        drawFunction(table4, 840, precision);
+            BeginMode2D(camera);
 
-        // drawFunction(table4, x1, precision);
+            BeginShaderMode(shaderMap);
+            map.CreateBuffer();
 
-        DrawFPS(10, 20);
+            SetShaderValueV(shaderMap, mapLoc, map._allPoints.data(), SHADER_UNIFORM_FLOAT, NB_POINTS);
+            SetShaderValue(shaderMap, precisionLoc, &precision, SHADER_UNIFORM_FLOAT);
+            SetShaderValue(shaderMap, resolutionLoc, &screenSize, SHADER_UNIFORM_VEC2);
 
+            DrawTextureRec(mapTexture.texture,
+                           (Rectangle) {
+                                   0,0,
+                                   (float) mapTexture.texture.width,
+                                   (float) mapTexture.texture.height},
+                           Vector2{0, 0},
+                           WHITE);
+            EndShaderMode();
+
+            //drawaxis();
+
+            EndMode2D();
+
+
+            //EndTextureMode();
+//            DrawTextureRec(mapTexture2.texture,
+//                           (Rectangle){
+//                                   0,
+//                                   0,
+//                                   (float)mapTexture2.texture.width,
+//                                   (float)mapTexture2.texture.height},
+//                           Vector2 {0,screenSize.y},
+//                           WHITE);
+
+
+            player.Draw();
+            map.DrawDebug();
+            //drawaxis();
+        }
+
+        // Draw UI
+        {
+            DrawText("Score :", 10, screenSize.y - 50, 50, RAYWHITE);
+            DrawFPS(10, 10);
+        }
+        //draw imGUI
+        {
+            BeginRLImGui();
+            ImGui::Begin("TinyWings");
+            ImGui::DragFloat("Zoom", &camera.zoom, 0.01f, 0.1f, 1.f);
+            //ImGui::DragFloat("Player Position", &player._position);
+            ImGui::DragFloat("Player.x", &player._position.x);
+            ImGui::DragFloat("Player.y", &player._position.y);
+            ImGui::DragFloat("Precision", &precision, 0.1f);
+            ImGui::DragFloat2("Offset", &map.offset.x);
+            ImGui::End();
+            EndRLImGui();
+        }
         EndDrawing();
+
         //----------------------------------------------------------------------------------
     }
 
     // De-Initialization
     //--------------------------------------------------------------------------------------
+    ShutdownRLImGui();
+    UnloadShader(shaderMap);
     CloseWindow(); // Close window and OpenGL context
     //--------------------------------------------------------------------------------------
 
