@@ -3,6 +3,7 @@
 #include <math.h>
 #include <raylib.h>
 #include <vector>
+#include <cmath>
 
 namespace Tinywings
 {
