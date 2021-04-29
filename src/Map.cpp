@@ -1,29 +1,25 @@
 #include "Map.hpp"
 #include "Functions.hpp"
+#include <iostream>
 
 using namespace Tinywings;
-/*____________________ZONE______________________________*/
 
-Zone::Zone(F_TYPE functionType, Vector2 &start, bool orientation,float precision)
+Zone::Zone(F_TYPE functionType, Vector2 &start, bool orientation, float precision)
 {
     sens = orientation;
 
-    p1 = start;
-    type = functionType;
     const int width = GetScreenWidth();
     const int height = GetScreenHeight();
-    int xoffset = GetRandomValue(width / ZONE_MIN_WIDTH, width / ZONE_MAX_WIDTH);
-    int yoffset = GetRandomValue(height / ZONE_MIN_HEIGHT, height / ZONE_MAX_HEIGHT);
 
-    //bool sens; // true: ascent; false: descent
-    //true : RED
-    //false : GREEN
-    //ascendant : Rouge
-    //Descendant : VERT
+    size.x = (float) GetRandomValue(width / ZONE_MIN_WIDTH, width / ZONE_MAX_WIDTH);
+    size.y = (float) GetRandomValue(height / ZONE_MIN_HEIGHT, height / ZONE_MAX_HEIGHT);
+
     if (sens)
-        yoffset *= -1;
+        size.y *= -1;
 
-    p2 = {start.x + (float)xoffset, start.y + (float)yoffset};
+    p1 = start;
+    p2 = Vector2{p1.x + size.x, p1.y + size.y};
+
 
     switch (functionType) {
 
@@ -37,17 +33,21 @@ Zone::Zone(F_TYPE functionType, Vector2 &start, bool orientation,float precision
             heightPoints = EllipticFunction::Create(p1, p2, precision);
             break;
         case F_TYPE::E_HYP:
+            heightPoints = HyperbolicFunction::Create(p1, p2, precision);
             break;
     }
 
-    for (float &item : heightPoints) {
-        item = (float)GetScreenHeight()-item;
+    for (int i = 0; i < heightPoints.size(); ++i) {
+
+        points.emplace_back(Vector2{p1.x + (float) i * precision, p1.y + heightPoints[i]});
     }
 
-}
+    auto nbpoints = (float) points.size();
+    for (Vector2 &point : points) {
+        point.x = point.x / nbpoints;
+        point.y = point.y / size.y;
+    }
 
-void Zone::Draw()
-{
 
 }
 
@@ -62,33 +62,15 @@ void Zone::DrawZone() const
 //    }
 }
 
-//void Zone::DrawZone() const
-//{
-//    DrawRectangleLinesEx(GetRectangle(), 2, sens ? RED : GREEN);
-//    DrawLineEx(p1, p2, 2, BLACK);
-//}
 
-Rectangle Zone::GetRectangle() const
-{
-    return Rectangle{p1.x, p1.y, p2.x - p1.x, p2.y - p1.y};
-}
-
-
-/*_______________________ MAP_______________________________*/
-
-Map::Map(float precision):_precision{precision}
+Map::Map(float precision, Camera2D *camera) : _precision{precision}, _camera2D{camera}
 {
     _currentType = F_TYPE::E_SIN;
-    _allPoints.reserve(1500);
+    _allPoints.reserve(NB_POINTS);
 
     for (int i = 0; i < INIT_ZONES_NB; ++i) {
         AddZone();
     }
-}
-
-void Map::Update()
-{
-
 }
 
 void Map::DrawDebug()
@@ -102,42 +84,43 @@ void Map::CreateBuffer()
 {
     _allPoints.clear();
 
-    for (Zone &item : _zones)
-    {
+    for (int i = 0; i < NB_POINTS; ++i) {
+        //_allPoints.emplace_back(GetValue(i));
+    }
+
+    for (Zone &item : _zones) {
         _allPoints.insert(_allPoints.end(), item.heightPoints.begin(), item.heightPoints.end());
-        if(_allPoints.size()>=2000)
+        if (_allPoints.size() >= NB_POINTS)
             return;
     }
 }
 
+float Map::GetValue(int x)
+{
+    _camera2D->zoom;
+    _precision;
+    offset;
+
+
+}
+
 void Map::AddZone()
 {
-    if (_zones.empty())
-    {
+    if (_zones.empty()) {
         const int height = GetScreenHeight();
-        Vector2 start{0, (float)(height -((float)height/3.f))};
+        Vector2 start{0, (float) (height - ((float) height / 3.f))};
 
-        _zones.emplace_back(_currentType, start, (bool) GetRandomValue(0, 1),_precision);
-        _zones.emplace_back(_currentType, _zones.back().p2, (bool) GetRandomValue(0, 1),_precision);
+        _zones.emplace_back(_currentType, start, (bool) GetRandomValue(0, 1), _precision);
+        _zones.emplace_back(_currentType, _zones.back().p2, (bool) GetRandomValue(0, 1), _precision);
         return;
     }
 
+    /* Orientation */
     bool orientation = (bool) GetRandomValue(0, 1);
-    int size = _zones.size();
-
-    if (_zones[size - 1].sens && orientation)
+    // Do not repeat an orientation more than twice
+    unsigned long size = _zones.size();
+    if ((_zones[size - 2].sens == orientation) && (_zones[size - 1].sens == orientation))
         orientation = !orientation;
 
-    _zones.emplace_back(_currentType, _zones.back().p2, orientation,_precision);
+    _zones.emplace_back(_currentType, _zones.back().p2, orientation, _precision);
 }
-
-F_TYPE Map::GetCurrentType()
-{
-    return _currentType;
-}
-
-void Map::SetCurrentType(F_TYPE currentType)
-{
-    Map::_currentType = currentType;
-}
-

@@ -11,6 +11,7 @@
 #include <vector>
 
 #define MAX_ZONES 100
+#define NB_POINTS 1000
 #define INIT_ZONES_NB 100
 #define ZONE_MIN_WIDTH 15  // in fraction of the screen , 10 -> 1/10 width
 #define ZONE_MAX_WIDTH 5   // in fraction of the screen , 10 -> 1/10 width
@@ -19,48 +20,55 @@
 
 namespace Tinywings
 {
-enum class F_TYPE
-{
-    E_SIN,
-    E_POLY,
-    E_ELLI,
-    E_HYP,
-};
+    enum class F_TYPE
+    {
+        E_SIN,
+        E_POLY,
+        E_ELLI,
+        E_HYP,
+    };
 
-struct Zone
-{
-    std::vector<float> heightPoints;
+    struct Zone
+    {
+        Vector2 p1;
+        Vector2 p2;
+        Vector2 size;
+        std::vector<float> heightPoints;
+        std::vector<Vector2> points;
 
-    F_TYPE  type;
-    bool    sens; // true: ascent; false: descent
-    Vector2 p1;
-    Vector2 p2;
+        bool sens;     //true : RED ascendant //false : GREEN Descendant
 
-    Zone(F_TYPE, Vector2& start, bool orientation, float precision);
-    Rectangle GetRectangle() const;
-    void      Draw();
-    void      DrawZone() const;
-};
+        Zone(F_TYPE, Vector2 &start, bool orientation, float precision);
 
-class Map
-{
-private:
-    std::deque<Zone> _zones;
-    F_TYPE           _currentType;
-    float            _precision;
+        //Rectangle GetRectangle() const;
 
-public:
-    std::vector<float> _allPoints;
+        void DrawZone() const;
+    };
 
-    Map(float precision);
+    class Map
+    {
+    private:
+        std::deque<Zone> _zones;
+        Camera2D *_camera2D;
+    public:
+        float speed;
+        Vector2 offset{0, 0};
 
-    void   Update();
-    void   DrawDebug();
-    void   CreateBuffer();
-    void   AddZone();
-    F_TYPE GetCurrentType();
-    void   SetCurrentType(F_TYPE currentType);
-};
+        float _precision;
+        F_TYPE _currentType;
+
+        std::vector<float> _allPoints;
+
+        explicit Map(float precision,Camera2D* camera);
+
+        void DrawDebug();
+
+        void CreateBuffer();
+
+        float GetValue(int x);
+
+        void AddZone();
+    };
 
 } // namespace Tinywings
 
