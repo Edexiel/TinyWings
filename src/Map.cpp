@@ -20,33 +20,35 @@ Zone::Zone(F_TYPE functionType, Vector2 &start, bool orientation, float precisio
     p1 = start;
     p2 = Vector2{p1.x + size.x, p1.y + size.y};
 
+    SinusFunction sin;
+    PolyFunction poly;
+    EllipticFunction Elli;
+    HyperbolicFunction Hyp;
 
     switch (functionType) {
 
         case F_TYPE::E_SIN:
-            heightPoints = SinusFunction::Create(p1, p2, 1, precision);
+            heightPoints = sin.Create(p1, p2, 1, 1);
             break;
         case F_TYPE::E_POLY:
-            heightPoints = PolyFunction::Create(p1, p2, precision);
+            heightPoints = poly.Create(p1, p2, 1);
             break;
         case F_TYPE::E_ELLI:
-            heightPoints = EllipticFunction::Create(p1, p2, precision);
+            heightPoints = Elli.Create(p1, p2, 1);
             break;
         case F_TYPE::E_HYP:
-            heightPoints = HyperbolicFunction::Create(p1, p2, precision);
+            heightPoints = Hyp.Create(p1, p2, 1);
             break;
     }
 
-    for (int i = 0; i < heightPoints.size(); ++i) {
-
-        points.emplace_back(Vector2{p1.x + (float) i * precision, p1.y + heightPoints[i]});
-    }
-
-    auto nbpoints = (float) points.size();
-    for (Vector2 &point : points) {
-        point.x = point.x / nbpoints;
-        point.y = point.y / size.y;
-    }
+//    std::cout << "Width: " << size.x << "  Precision: " << precision << "  Array size : " << heightPoints.size()
+//              << std::endl;
+//
+//    std::cout << "Start "<< p1.y << std::endl;
+//    for (const auto &heightPoint : heightPoints) {
+//        std::cout << heightPoint << std::endl;
+//    }
+//    std::cout << "Stop "<< p2.y << std::endl;
 
 
 }
@@ -62,8 +64,13 @@ void Zone::DrawZone() const
 //    }
 }
 
+std::vector<float>& Zone::getPoints()
+{
+    return heightPoints;
+}
 
-Map::Map(float precision, Camera2D *camera) : _precision{precision}, _camera2D{camera}
+
+Map::Map(int precision) : _precision{precision}
 {
     _currentType = F_TYPE::E_SIN;
     _allPoints.reserve(NB_POINTS);
@@ -83,32 +90,32 @@ void Map::DrawDebug()
 void Map::CreateBuffer()
 {
     _allPoints.clear();
-
-    for (int i = 0; i < NB_POINTS; ++i) {
-        //_allPoints.emplace_back(GetValue(i));
-    }
+    _buffer.clear();
 
     for (Zone &item : _zones) {
         _allPoints.insert(_allPoints.end(), item.heightPoints.begin(), item.heightPoints.end());
-        if (_allPoints.size() >= NB_POINTS)
-            return;
+        if (_allPoints.size() >= GetScreenWidth()+100)
+            break;
     }
+
+    for (int i = 0; i < (int)(GetScreenWidth()+_precision) ; i+=_precision)
+    {
+        _buffer.push_back(_allPoints[i]);
+    }
+
 }
 
 float Map::GetValue(int x)
 {
-    _camera2D->zoom;
     _precision;
     offset;
-
-
 }
 
 void Map::AddZone()
 {
     if (_zones.empty()) {
         const int height = GetScreenHeight();
-        Vector2 start{0, (float) (height - ((float) height / 3.f))};
+        Vector2 start{0, (float) ((float)height - ((float) height / 3.f))};
 
         _zones.emplace_back(_currentType, start, (bool) GetRandomValue(0, 1), _precision);
         _zones.emplace_back(_currentType, _zones.back().p2, (bool) GetRandomValue(0, 1), _precision);

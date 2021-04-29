@@ -11,7 +11,7 @@
 #include <vector>
 
 #define MAX_ZONES 100
-#define NB_POINTS 1024
+#define NB_POINTS 512
 #define INIT_ZONES_NB 100
 #define ZONE_MIN_WIDTH 15  // in fraction of the screen , 10 -> 1/10 width
 #define ZONE_MAX_WIDTH 5   // in fraction of the screen , 10 -> 1/10 width
@@ -34,7 +34,6 @@ namespace Tinywings
         Vector2 p2;
         Vector2 size;
         std::vector<float> heightPoints;
-        std::vector<Vector2> points;
 
         bool sens;     //true : RED ascendant //false : GREEN Descendant
 
@@ -43,23 +42,25 @@ namespace Tinywings
         //Rectangle GetRectangle() const;
 
         void DrawZone() const;
+
+        std::vector<float> &getPoints();
     };
 
     class Map
     {
     private:
         std::deque<Zone> _zones;
-        Camera2D *_camera2D;
     public:
         float speed;
         Vector2 offset{0, 0};
 
-        float _precision;
+        int _precision;
         F_TYPE _currentType;
 
         std::vector<float> _allPoints;
+        std::vector<float> _buffer;
 
-        explicit Map(float precision,Camera2D* camera);
+        explicit Map(int precision);
 
         void DrawDebug();
 

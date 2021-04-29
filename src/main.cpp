@@ -31,7 +31,7 @@ int main()
     int resolutionLoc = GetShaderLocation(shaderMap, "u_resolution");
     int offsetLoc = GetShaderLocation(shaderMap, "u_offset");
 
-    float precision = 4.f;
+    int precision = 10.f;
 
     Player player{{screenSize.x / 2.f, screenSize.y / 3.f}, 0.25};
 
@@ -41,11 +41,11 @@ int main()
     camera.rotation = 0.0f;
     camera.zoom = 1.f;
 
-    Map map{precision,&camera};
+    Map map{precision};
 
     SetupRLImGui(true);
 
-    while (!WindowShouldClose()) // Detect window close button or ESC key
+    while (!WindowShouldClose())
     {
         float deltaTime = GetFrameTime();
 
@@ -62,8 +62,8 @@ int main()
             BeginShaderMode(shaderMap);
             map.CreateBuffer();
 
-            SetShaderValueV(shaderMap, mapLoc, map._allPoints.data(), SHADER_UNIFORM_FLOAT, NB_POINTS);
-            SetShaderValue(shaderMap, precisionLoc, &precision, SHADER_UNIFORM_FLOAT);
+            SetShaderValueV(shaderMap, mapLoc, map._buffer.data(), SHADER_UNIFORM_FLOAT, NB_POINTS);
+            SetShaderValue(shaderMap, precisionLoc, &precision, SHADER_UNIFORM_INT);
             SetShaderValue(shaderMap, resolutionLoc, &screenSize, SHADER_UNIFORM_VEC2);
             SetShaderValue(shaderMap, offsetLoc, &map.offset, SHADER_UNIFORM_VEC2);
 
@@ -106,11 +106,11 @@ int main()
         {
             BeginRLImGui();
             ImGui::Begin("TinyWings");
-            ImGui::DragFloat("Zoom", &camera.zoom, 0.01f, 0.1f, 1.f);
+            //ImGui::DragFloat("Zoom", &camera.zoom, 0.01f, 0.1f, 1.f);
             //ImGui::DragFloat("Player Position", &player._position);
             ImGui::DragFloat("Player.x", &player._position.x);
             ImGui::DragFloat("Player.y", &player._position.y);
-            ImGui::DragFloat("Precision", &precision, 0.1f);
+            ImGui::DragInt("Precision", &precision);
             ImGui::DragFloat2("Offset", &map.offset.x);
             ImGui::End();
             EndRLImGui();
