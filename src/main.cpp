@@ -29,6 +29,7 @@ int main()
     int mapLoc = GetShaderLocation(shaderMap, "u_map");
     int precisionLoc = GetShaderLocation(shaderMap, "u_precision");
     int resolutionLoc = GetShaderLocation(shaderMap, "u_resolution");
+    int offsetLoc = GetShaderLocation(shaderMap, "u_offset");
 
     float precision = 4.f;
 
@@ -64,6 +65,7 @@ int main()
             SetShaderValueV(shaderMap, mapLoc, map._allPoints.data(), SHADER_UNIFORM_FLOAT, NB_POINTS);
             SetShaderValue(shaderMap, precisionLoc, &precision, SHADER_UNIFORM_FLOAT);
             SetShaderValue(shaderMap, resolutionLoc, &screenSize, SHADER_UNIFORM_VEC2);
+            SetShaderValue(shaderMap, offsetLoc, &map.offset, SHADER_UNIFORM_VEC2);
 
             DrawTextureRec(mapTexture.texture,
                            (Rectangle) {
