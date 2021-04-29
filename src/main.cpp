@@ -33,14 +33,16 @@ int main(void)
     float        precision = 1;
     unsigned int n         = 3;
 
-    std::vector<float> table = SinusFunction::Create(x1, x2, y1, y2, n, precision);
+    SinusFunction      sinusFunction;
+    std::vector<float> table = sinusFunction.Create(x1, x2, y1, y2, n, precision);
 
     x1 = x2;
     x2 = 550;
     y1 = y2;
     y2 = 400;
 
-    std::vector<float> table2 = PolyFunction::Create(x1, x2, y1, y2, precision);
+    PolyFunction       polyFunction;
+    std::vector<float> table2 = polyFunction.Create(x1, x2, y1, y2, precision);
 
     x1 = x2;
     x2 = 840;

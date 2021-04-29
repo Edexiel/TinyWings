@@ -7,10 +7,11 @@ namespace Tinywings
 {
 struct SinusFunction
 {
-    inline static std::vector<float> Create(float x1, float x2, float y1, float y2, unsigned int n,
-                                            float precision) noexcept;
-    inline static std::vector<float> Create(const Vector2& p1, const Vector2& p2, unsigned int n,
-                                            float precision) noexcept;
+    inline std::vector<float> Create(float x1, float x2, float y1, float y2, unsigned int n, float precision) noexcept;
+    inline std::vector<float> Create(const Vector2& p1, const Vector2& p2, unsigned int n, float precision) noexcept;
+
+    std::function<float(float)>        fx;
+    std::function<float(float, float)> deriv;
 };
 
 std::vector<float> SinusFunction::Create(float x1, float x2, float y1, float y2, unsigned int n,
@@ -41,17 +42,19 @@ std::vector<float> SinusFunction::Create(float x1, float x2, float y1, float y2,
 
     float phase = (PI / 2) - pulsation * x2;
 
-    auto function = [&](float x) { return (offset + amplitude * (powf(sinf(pulsation * x + phase), n))); };
+    fx = [&](float x) { return (offset + amplitude * (powf(sinf(pulsation * x + phase), n))); };
+
+    deriv = [&](float x, float n1) { return (offset + amplitude * (powf(sinf(pulsation * x + phase + PI / 2), n1))); };
 
     std::vector<float> table;
     float              i = 0;
     while (i + x1 < x2)
     {
-        table.push_back(function(x1 + i));
+        table.push_back(fx(x1 + i));
         i += precision;
     }
 
-    table.push_back(function(x2));
+    table.push_back(fx(x2));
 
     return table;
 }
