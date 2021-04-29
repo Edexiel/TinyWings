@@ -4,7 +4,7 @@
 precision mediump float;
 #endif
 
-#define BUFFER_SIZE 1024
+#define BUFFER_SIZE 512
 uniform vec2 u_resolution;
 uniform vec2 u_offset;
 uniform float u_precision;
