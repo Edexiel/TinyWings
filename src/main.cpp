@@ -20,28 +20,32 @@ int main()
 
     // SetConfigFlags(FLAG_MSAA_4X_HINT);
 
-    InitWindow((int) screenSize.x, (int) screenSize.y, "TinyWings");
+    InitWindow((int)screenSize.x, (int)screenSize.y, "TinyWings");
     SetTargetFPS(0);
 
-    RenderTexture2D mapTexture = LoadRenderTexture((int)screenSize.x,(int)screenSize.y);
-    Shader shaderMap = LoadShader(nullptr, TextFormat("../assets/shader/map.fs", GLSL_VERSION));
+    RenderTexture2D mapTexture = LoadRenderTexture((int)screenSize.x, (int)screenSize.y);
+    Shader          shaderMap  = LoadShader(nullptr, TextFormat("../assets/shader/map.fs", GLSL_VERSION));
 
-    int mapLoc = GetShaderLocation(shaderMap, "u_map");
-    int precisionLoc = GetShaderLocation(shaderMap, "u_precision");
+    int mapLoc        = GetShaderLocation(shaderMap, "u_map");
+    int precisionLoc  = GetShaderLocation(shaderMap, "u_precision");
     int resolutionLoc = GetShaderLocation(shaderMap, "u_resolution");
-    int offsetLoc = GetShaderLocation(shaderMap, "u_offset");
+    int offsetLoc     = GetShaderLocation(shaderMap, "u_offset");
 
     int precision = 10.f;
 
     Player player{{screenSize.x / 2.f, screenSize.y / 3.f}, 0.25};
 
-//    Camera2D camera{0};
-//    camera.target = {0, 0};
-//    camera.offset = Vector2{0, 0};
-//    camera.rotation = 0.0f;
-//    camera.zoom = 1.f;
+    //    Camera2D camera{0};
+    //    camera.target = {0, 0};
+    //    camera.offset = Vector2{0, 0};
+    //    camera.rotation = 0.0f;
+    //    camera.zoom = 1.f;
 
-    Map map{precision};
+    Map map{
+        player,
+        screenSize,
+        precision,
+    };
 
     SetupRLImGui(true);
 
@@ -50,68 +54,66 @@ int main()
         float deltaTime = GetFrameTime();
 
         player.Update(deltaTime);
+        map.Update(deltaTime);
+        //player._scale = map._scale;
 
         BeginDrawing();
 
         ClearBackground(SKYBLUE);
         {
-            //BeginTextureMode(mapTexture2);
+            // BeginTextureMode(mapTexture2);
 
-//            BeginMode2D(camera);
+            //            BeginMode2D(camera);
 
             BeginShaderMode(shaderMap);
             map.CreateBuffer();
 
             SetShaderValueV(shaderMap, mapLoc, map._buffer.data(), SHADER_UNIFORM_FLOAT, NB_POINTS);
-            SetShaderValue(shaderMap, precisionLoc, &precision, SHADER_UNIFORM_INT);
+            SetShaderValue(shaderMap, precisionLoc, &map._precision, SHADER_UNIFORM_FLOAT);
             SetShaderValue(shaderMap, resolutionLoc, &screenSize, SHADER_UNIFORM_VEC2);
-            SetShaderValue(shaderMap, offsetLoc, &map.offset, SHADER_UNIFORM_VEC2);
+            SetShaderValue(shaderMap, offsetLoc, &map._offset, SHADER_UNIFORM_VEC2);
 
             DrawTextureRec(mapTexture.texture,
-                           (Rectangle) {
-                                   0,0,
-                                   (float) mapTexture.texture.width,
-                                   (float) mapTexture.texture.height},
-                           Vector2{0, 0},
-                           WHITE);
+                           (Rectangle){0, 0, (float)mapTexture.texture.width, (float)mapTexture.texture.height},
+                           Vector2{0, 0}, WHITE);
             EndShaderMode();
 
-            //drawaxis();
+            // drawaxis();
 
-//            EndMode2D();
+            //            EndMode2D();
 
-
-            //EndTextureMode();
-//            DrawTextureRec(mapTexture2.texture,
-//                           (Rectangle){
-//                                   0,
-//                                   0,
-//                                   (float)mapTexture2.texture.width,
-//                                   (float)mapTexture2.texture.height},
-//                           Vector2 {0,screenSize.y},
-//                           WHITE);
-
+            // EndTextureMode();
+            //            DrawTextureRec(mapTexture2.texture,
+            //                           (Rectangle){
+            //                                   0,
+            //                                   0,
+            //                                   (float)mapTexture2.texture.width,
+            //                                   (float)mapTexture2.texture.height},
+            //                           Vector2 {0,screenSize.y},
+            //                           WHITE);
 
             player.Draw();
-            map.DrawDebug();
-            //drawaxis();
+            //map.DrawDebug();
+            // drawaxis();
         }
 
         // Draw UI
         {
-            DrawText("Score :", 10, screenSize.y - 50, 50, RAYWHITE);
+            DrawText(FormatText("Score : %2i",(int)map._offset.x), 10, screenSize.y - 50, 50, RAYWHITE);
             DrawFPS(10, 10);
         }
-        //draw imGUI
+        // draw imGUI
         {
             BeginRLImGui();
             ImGui::Begin("TinyWings");
-            //ImGui::DragFloat("Zoom", &camera.zoom, 0.01f, 0.1f, 1.f);
-            //ImGui::DragFloat("Player Position", &player._position);
+            // ImGui::DragFloat("Zoom", &camera.zoom, 0.01f, 0.1f, 1.f);
+            // ImGui::DragFloat("Player Position", &player._position);
+            ImGui::DragFloat("Speed", &player._speed);
+            ImGui::DragInt("Precision", &precision);
+            ImGui::DragFloat2("Offset", &map._offset.x);
+            ImGui::DragFloat("Scale", &map._scale,0.1,0.f,10.f);
             ImGui::DragFloat("Player.x", &player._position.x);
             ImGui::DragFloat("Player.y", &player._position.y);
-            ImGui::DragInt("Precision", &precision);
-            ImGui::DragFloat2("Offset", &map.offset.x);
             ImGui::End();
             EndRLImGui();
         }
