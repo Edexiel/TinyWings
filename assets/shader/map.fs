@@ -16,6 +16,9 @@ out vec4 myOutputColor;
 void main()
 {
     vec3 red = vec3(0.9f, 0.1f, 0.1f);
+    vec3 white = vec3(0.85f, 0.85f, 0.85f);
+    //float direction =
+
     float x = gl_FragCoord.x /u_precision;
     float height = mix(u_map[int(floor(x))],u_map[int(ceil(x))],fract(x));
     float targety = gl_FragCoord.y + u_offset.y;

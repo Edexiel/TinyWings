@@ -4,6 +4,9 @@
 
 #include "Map.hpp"
 #include "Player.hpp"
+#include <string>
+#include <iostream>
+#include "raymath.h"
 
 using namespace Tinywings;
 
@@ -21,6 +24,7 @@ int main()
     // SetConfigFlags(FLAG_MSAA_4X_HINT);
 
     InitWindow((int)screenSize.x, (int)screenSize.y, "TinyWings");
+    SetWindowState(FLAG_WINDOW_RESIZABLE);
     SetTargetFPS(0);
 
     RenderTexture2D mapTexture = LoadRenderTexture((int)screenSize.x, (int)screenSize.y);
@@ -31,9 +35,9 @@ int main()
     int resolutionLoc = GetShaderLocation(shaderMap, "u_resolution");
     int offsetLoc     = GetShaderLocation(shaderMap, "u_offset");
 
-    int precision = 10.f;
+    float precision = 10.f;
 
-    Player player{{screenSize.x / 2.f, screenSize.y / 3.f}, 0.25};
+    Player player{{screenSize.x / 3.5f, screenSize.y / 3.f}, 0.20};
 
     //    Camera2D camera{0};
     //    camera.target = {0, 0};
@@ -49,13 +53,26 @@ int main()
 
     SetupRLImGui(true);
 
+    bool showdebug=false;
+    int function_index=0;
+    F_TYPE functionType;
+    std::string functionName[4]{"Sinusoide","Polynomiale","Elliptique","Hyperbolique"};
+
     while (!WindowShouldClose())
     {
+        screenSize.x = (float)GetScreenWidth();
+        screenSize.y = (float)GetScreenHeight();
+
         float deltaTime = GetFrameTime();
+
+        if(IsWindowResized())
+        {
+            UnloadRenderTexture(mapTexture);
+            mapTexture = LoadRenderTexture((int)screenSize.x,(int)screenSize.y);
+        }
 
         player.Update(deltaTime);
         map.Update(deltaTime);
-        //player._scale = map._scale;
 
         BeginDrawing();
 
@@ -91,25 +108,53 @@ int main()
             //                                   (float)mapTexture2.texture.height},
             //                           Vector2 {0,screenSize.y},
             //                           WHITE);
+            player._position.y = map.GetIPoint(player._position.x + (player._texture.width/2*player._scale)+ (map._offset.x - map._deletedSpace)) - (player._texture.height*player._scale);
 
             player.Draw();
-            //map.DrawDebug();
-            // drawaxis();
         }
 
         // Draw UI
         {
-            DrawText(FormatText("Score : %2i",(int)map._offset.x), 10, screenSize.y - 50, 50, RAYWHITE);
+            if(IsKeyPressed(KEY_F4))
+                showdebug= !showdebug;
+
+            if(IsKeyPressed(KEY_RIGHT))
+            {
+                function_index++;
+            }
+            if(IsKeyPressed(KEY_LEFT))
+            {
+                function_index--;
+            }
+            if(IsKeyPressed(KEY_RIGHT) || IsKeyPressed(KEY_LEFT))
+            {
+                function_index= function_index%4;
+                if(function_index<0)
+                    function_index=3;
+                map._currentType = static_cast<F_TYPE>(function_index);
+                std::cout<<function_index<<std::endl;
+
+            }
+
+
+            if(showdebug)
+                map.DrawDebug();
+
+            DrawText(FormatText("Score : %2i",(int)map._offset.x), 10, screenSize.y - 65, 50, RAYWHITE);
+            DrawText("<          >", screenSize.x-250, screenSize.y - 75, 50, SKYBLUE);
+            DrawText(functionName[function_index].c_str(), screenSize.x-200, screenSize.y - 65, 25, RAYWHITE);
             DrawFPS(10, 10);
+            DrawText("F4: show debug",10,screenSize.y - 15,10,RAYWHITE);
         }
         // draw imGUI
+        if(showdebug)
         {
             BeginRLImGui();
             ImGui::Begin("TinyWings");
             // ImGui::DragFloat("Zoom", &camera.zoom, 0.01f, 0.1f, 1.f);
             // ImGui::DragFloat("Player Position", &player._position);
             ImGui::DragFloat("Speed", &player._speed);
-            ImGui::DragInt("Precision", &precision);
+            ImGui::DragFloat("Precision", &precision);
             ImGui::DragFloat2("Offset", &map._offset.x);
             ImGui::DragFloat("Scale", &map._scale,0.1,0.f,10.f);
             ImGui::DragFloat("Player.x", &player._position.x);

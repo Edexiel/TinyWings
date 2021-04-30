@@ -19,7 +19,7 @@ namespace Tinywings
 {
 enum class F_TYPE
 {
-    E_SIN,
+    E_SIN=0,
     E_POLY,
     E_ELLI,
     E_HYP,
@@ -35,8 +35,6 @@ struct Zone
     bool sens; // true : RED ascendant //false : GREEN Descendant
 
     Zone(F_TYPE, Vector2& start, bool orientation, float precision);
-
-    void DrawZone() const;
 };
 
 class Map
@@ -56,7 +54,7 @@ public:
     std::vector<float> _allPoints;
     std::vector<float> _buffer;
 
-    Map(Player& player, Vector2& screenSize, int precision);
+    Map(Player& player, Vector2& screenSize, float precision);
 
     void DrawDebug();
 

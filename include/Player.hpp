@@ -16,7 +16,7 @@ public:
     float     _rotation              = {0.f};
     float     _gravity               = {0.0002f};
     Vector2   _direction             = {1.f, 0.f};
-    float     _speed                 = {1.f};
+    float     _speed                 = {100.f};
     float     _baseSpeed             = {1.f};
     float     _directionAcceleration = {0.001f};
     float     _speedAcceleration     = {0.00001f};
