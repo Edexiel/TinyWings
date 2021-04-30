@@ -1,4 +1,4 @@
-#ifndef TINYWINGS_MAP_HPP
+﻿#ifndef TINYWINGS_MAP_HPP
 #define TINYWINGS_MAP_HPP
 
 #include "Player.hpp"
@@ -9,7 +9,7 @@
 //#include "Function.hpp"
 
 #define MAX_ZONES 100
-#define NB_POINTS 512
+#define NB_POINTS 1024
 #define INIT_ZONES_NB 25
 #define ZONE_MIN_WIDTH 15  // in fraction of the screen , 10 -> 1/10 width
 #define ZONE_MAX_WIDTH 5   // in fraction of the screen , 10 -> 1/10 width
@@ -19,64 +19,59 @@
 
 namespace Tinywings
 {
-    class Function;
+	class Function;
 
-    enum class F_TYPE
-    {
-        E_SIN,
-        E_POLY,
-        E_ELLI,
-        E_HYP,
-    };
+	enum class F_TYPE
+	{
+		E_SIN,
+		E_POLY,
+		E_ELLI,
+		E_HYP,
+	};
 
-    struct Zone
-    {
-        Vector2 p1;
-        Vector2 p2;
-        Vector2 size;
-        std::vector<float> heightPoints;
-        std::vector<Vector2> points;
-        Function* function;
+	struct Zone
+	{
+		Vector2 p1;
+		Vector2 p2;
+		Vector2 size;
+		std::vector<float> heightPoints;
+		std::vector<Vector2> points;
+		Function* function;
 
-    bool sens; // true : RED ascendant //false : GREEN Descendant
+		bool sens; // true : RED ascendant //false : GREEN Descendant
 
-    Zone(F_TYPE, Vector2& start, bool orientation, float precision);
+		Zone(F_TYPE, Vector2& start, bool orientation, float precision);
 
-    void DrawZone() const;
-};
+		void DrawZone() const;
+	};
 
-class Map
-{
-private:
-    std::deque<Zone> _zones;
+	class Map
+	{
+	public:
+		std::deque<Zone> _zones;
+		float    _scale{ 1.f };
+		float    _deletedSpace{ 0.f };
+		Player& _player;
+		Vector2  _offset{ 0, 0 };
+		Vector2& _screenSize;
+		float    _precision{ 10.f };
+		F_TYPE   _currentType;
 
-    class Map
-    {
-    public:
-        std::deque<Zone> _zones;
-        float    _scale{1.f};
-        float    _deletedSpace;
-        Player&  _player;
-        Vector2  _offset{0, 0};
-        Vector2& _screenSize;
-        float    _precision{10.f};
-        F_TYPE   _currentType;
+		std::vector<float> _allPoints;
+		std::vector<float> _buffer;
 
-    std::vector<float> _allPoints;
-    std::vector<float> _buffer;
+		Map(Player& player, Vector2& screenSize, float precision);
 
-    Map(Player& player, Vector2& screenSize, int precision);
+		void DrawDebug();
 
-    void DrawDebug();
+		void CreateBuffer();
 
-    void CreateBuffer();
+		void Update(float DeltaTime);
 
-    void Update(float DeltaTime);
+		float GetIPoint(float position);
 
-    float GetIPoint(float position);
-
-    void AddZone();
-};
+		void AddZone();
+	};
 
 } // namespace Tinywings
 
