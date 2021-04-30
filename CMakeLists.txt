@@ -56,7 +56,7 @@ add_executable(${PROJECT_NAME}
         libraries/ImGui/imgui_widgets.cpp
         libraries/ImGui/imgui_tables.cpp
         libraries/rlImGui/rlImGui.cpp
-        )
+         "include/Function.hpp" "src/Function.cpp")
 
 target_include_directories (${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/libraries/rlImGui ${CMAKE_CURRENT_SOURCE_DIR}/libraries/ImGui)
 

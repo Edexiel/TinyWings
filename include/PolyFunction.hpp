@@ -1,4 +1,5 @@
 #pragma once
+#include "Function.hpp"
 #include <math.h>
 #include <raylib.h>
 #include <raymath.h>
@@ -6,14 +7,11 @@
 
 namespace Tinywings
 {
-struct PolyFunction
+class PolyFunction : public Function
 {
+public:
     inline std::vector<float> Create(float x1, float x2, float y1, float y2, float precision) noexcept;
     inline std::vector<float> Create(const Vector2& p1, const Vector2& p2, float precision) noexcept;
-
-    std::function<float(float)> fx;
-    std::function<float(float)> deriv1;
-    std::function<float(float)> deriv2;
 };
 
 std::vector<float> PolyFunction::Create(float x1, float x2, float y1, float y2, float precision) noexcept
@@ -32,9 +30,9 @@ std::vector<float> PolyFunction::Create(float x1, float x2, float y1, float y2, 
     float c = X.m2;
     float d = X.m3;
 
-    fx     = [&](float x) { return (a * x * x * x + b * x * x + c * x + d); };
-    deriv1 = [&](float x) { return (3 * a * x * x + 2 * b * x + c); };
-    deriv2 = [&](float x) { return (6 * a * x + 2 * b); };
+    fx       = [&](float x) { return (a * x * x * x + b * x * x + c * x + d); };
+    deriv1fx = [&](float x) { return (3 * a * x * x + 2 * b * x + c); };
+    deriv2fx = [&](float x) { return (6 * a * x + 2 * b); };
 
     std::vector<float> table;
     float              i = 0;
