@@ -46,7 +46,7 @@ private:
 
 public:
     float    _scale{1.f};
-    float    _deletedSpace;
+    float    _deletedSpace{0.f};
     Player&  _player;
     Vector2  _offset{0, 0};
     Vector2& _screenSize;
