@@ -97,8 +97,9 @@ void Map::CreateBuffer()
         if (_allPoints.size() >= (int)(_screenSize.x*1.5f*_scale))
             break;
     }
+
     const float start = _offset.x- _deletedSpace;
-    const float end =  _precision+_offset.x+_screenSize.x;
+    const float end =  _precision+_offset.x-_deletedSpace+_screenSize.x;
     const float step = _precision ;//_scale;
 
     //todo : lol pas propre
@@ -119,8 +120,8 @@ void Map::AddZone()
 {
     if (_zones.empty())
     {
-        const int height = GetScreenHeight();
-        Vector2   start{0, (float)((float)height - ((float)height / 3.f))};
+        const int height = _screenSize.y
+        Vector2   start{0, (_screenSize.y - (_screenSize.y / 3.f)};
 
         _zones.emplace_back(_currentType, start, (bool)GetRandomValue(0, 1), _precision);
         _zones.emplace_back(_currentType, _zones.back().p2, (bool)GetRandomValue(0, 1), _precision);
