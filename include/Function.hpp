@@ -23,6 +23,7 @@ public:
     std::function<float(float)>        deriv1gx = nullptr;
     std::function<float(float)>        deriv2gx = nullptr;
     std::function<float(float, float)> sinDeriv = nullptr;
+    bool                                isAscending;
 };
 } // namespace Tinywings
 

@@ -1,3 +1,4 @@
+//#define RAYMATH_IMPLEMENTATION
 #include "imgui.h"
 #include "raylib.h"
 #include "rlImGui.h"

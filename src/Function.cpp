@@ -12,6 +12,16 @@ void Function::Create(float x1, float x2, float y1, float y2, float precision, F
     EllipticFunction   function3;
     HyperbolicFunction function4;
 
+    if (y1 <= y2)
+    {
+        isAscending = true;
+    }
+
+    else
+    {
+        isAscending = false;
+    }
+
     switch (type)
     {
 
