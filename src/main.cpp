@@ -106,7 +106,7 @@ int main()
             //                                   (float)mapTexture2.texture.height},
             //                           Vector2 {0,screenSize.y},
             //                           WHITE);
-            player._position.y = map.GetIPoint(player._position.x + (player._texture.width/2*player._scale)+ (map._offset.x - map._deletedSpace)) - (player._texture.height*player._scale);
+            //player._position.y = map.GetIPoint(player._position.x + (player._texture.width/2*player._scale)+ (map._offset.x - map._deletedSpace)) - (player._texture.height*player._scale);
 
             player.Draw();
         }
