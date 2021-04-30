@@ -6,4 +6,4 @@
 #include "PolyFunction.hpp"
 #include "SinusFunction.hpp"
 
-#endif //TINYWINGS_FUNCTIONS_HPP
+#endif // TINYWINGS_FUNCTIONS_HPP

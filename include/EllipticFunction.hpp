@@ -1,24 +1,19 @@
 #pragma once
+#include "Function.hpp"
+#include <cmath>
 #include <functional>
 #include <math.h>
 #include <raylib.h>
 #include <vector>
-#include <cmath>
 
 namespace Tinywings
 {
 
-struct EllipticFunction
+class EllipticFunction : public Function
 {
+public:
     inline std::vector<float> Create(float x1, float x2, float y1, float y2, float precision) noexcept;
     inline std::vector<float> Create(const Vector2& p1, const Vector2& p2, float precision) noexcept;
-
-    std::function<float(float)> fx;
-    std::function<float(float)> deriv1fx;
-    std::function<float(float)> deriv2fx;
-    std::function<float(float)> gx;
-    std::function<float(float)> deriv1gx;
-    std::function<float(float)> deriv2gx;
 };
 
 std::vector<float> EllipticFunction::Create(float x1, float x2, float y1, float y2, float precision) noexcept
