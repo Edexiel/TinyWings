@@ -10,141 +10,134 @@ using namespace Tinywings;
 
 Zone::Zone(F_TYPE functionType, Vector2& start, bool orientation, float precision)
 {
-	sens = orientation;
+    sens = orientation;
 
-	const int width = GetScreenWidth();
-	const int height = GetScreenHeight();
+    const int width  = GetScreenWidth();
+    const int height = GetScreenHeight();
 
-	size.x = (float)GetRandomValue(width / ZONE_MIN_WIDTH, width / ZONE_MAX_WIDTH);
-	size.y = (float)GetRandomValue(height / ZONE_MIN_HEIGHT, height / ZONE_MAX_HEIGHT);
+    size.x = (float)GetRandomValue(width / ZONE_MIN_WIDTH, width / ZONE_MAX_WIDTH);
+    size.y = (float)GetRandomValue(height / ZONE_MIN_HEIGHT, height / ZONE_MAX_HEIGHT);
 
-	if (sens)
-		size.y *= -1;
+    if (sens)
+        size.y *= -1;
 
-	p1 = start;
-	p2 = Vector2{ p1.x + size.x, p1.y + size.y };
+    p1 = start;
+    p2 = Vector2{p1.x + size.x, p1.y + size.y};
 
-	Function function2;
+    switch (functionType)
+    {
 
-	function = &function2;
+    case F_TYPE::E_SIN:
+        function = std::make_unique<SinusFunction>(p1.x, p2.x, p1.y, p2.y, 1, 1);
+        break;
+    case F_TYPE::E_POLY:
+        function = std::make_unique<PolyFunction>(p1.x, p2.x, p1.y, p2.y, 1);
+        break;
+    case F_TYPE::E_ELLI:
+        function = std::make_unique<EllipticFunction>(p1.x, p2.x, p1.y, p2.y, 1);
+        break;
+    case F_TYPE::E_HYP:
+        function = std::make_unique<HyperbolicFunction>(p1.x, p2.x, p1.y, p2.y, 1);
+        break;
+    }
 
-	switch (functionType)
-	{
-
-	case F_TYPE::E_SIN:
-		function->Create(p1, p2, 1, functionType, 1);
-		heightPoints = function->pts;
-		break;
-	case F_TYPE::E_POLY:
-		function->Create(p1, p2, 1, functionType);
-		heightPoints = function->pts;
-		break;
-	case F_TYPE::E_ELLI:
-		function->Create(p1, p2, 1, functionType);
-		heightPoints = function->pts;
-		break;
-	case F_TYPE::E_HYP:
-		function->Create(p1, p2, 1, functionType);
-		heightPoints = function->pts;
-		break;
-	}
-
-	//    std::cout << "Width: " << size.x << "  Precision: " << precision << "  Array size : " << heightPoints.size()
-	//              << std::endl;
-	//
-	//    std::cout << "Start "<< p1.y << std::endl;
-	//    for (const auto &heightPoint : heightPoints) {
-	//        std::cout << heightPoint << std::endl;
-	//    }
-	//    std::cout << "Stop "<< p2.y << std::endl;
+    heightPoints = function->pts;
+    //    std::cout << "Width: " << size.x << "  Precision: " << precision << "  Array size : " << heightPoints.size()
+    //              << std::endl;
+    //
+    //    std::cout << "Start "<< p1.y << std::endl;
+    //    for (const auto &heightPoint : heightPoints) {
+    //        std::cout << heightPoint << std::endl;
+    //    }
+    //    std::cout << "Stop "<< p2.y << std::endl;
 }
 
 void Zone::DrawZone() const
 {
-	DrawRectangleLines((int)p1.x, (int)p1.y, (int)(p2.x - p1.x), (int)(p2.y - p1.y), sens ? RED : GREEN);
+    DrawRectangleLines((int)p1.x, (int)p1.y, (int)(p2.x - p1.x), (int)(p2.y - p1.y), sens ? RED : GREEN);
 }
 
 Map::Map(Player& player, Vector2& screenSize, float precision)
-	: _player{ player }, _screenSize{ screenSize }, _precision{ precision }
+    : _player{player}, _screenSize{screenSize}, _precision{precision}
 {
-	_currentType = F_TYPE::E_SIN;
-	_allPoints.reserve((size_t)(_screenSize.x * 5.f)); // we reserve 5x the width of the screen, because yes
+    _currentType = F_TYPE::E_SIN;
+    _allPoints.reserve((size_t)(_screenSize.x * 5.f)); // we reserve 5x the width of the screen, because yes
 
-	for (int i = 0; i < INIT_ZONES_NB; ++i)
-	{
-		AddZone();
-	}
+    for (int i = 0; i < INIT_ZONES_NB; ++i)
+    {
+        AddZone();
+    }
 }
 
 void Map::DrawDebug()
 {
-	for (const auto& item : _zones)
-	{
-		item.DrawZone();
-	}
+    for (const auto& item : _zones)
+    {
+        item.DrawZone();
+    }
 }
 
 void Map::CreateBuffer()
 {
-	_allPoints.clear();
-	_buffer.clear();
+    _allPoints.clear();
+    _buffer.clear();
 
-	for (Zone& item : _zones)
-	{
-		_allPoints.insert(_allPoints.end(), item.heightPoints.begin(), item.heightPoints.end());
-		if (_allPoints.size() >= (int)(_screenSize.x * 1.5f * _scale))
-			break;
-	}
+    for (Zone& item : _zones)
+    {
+        _allPoints.insert(_allPoints.end(), item.heightPoints.begin(), item.heightPoints.end());
+        if (_allPoints.size() >= (int)(_screenSize.x * 1.5f * _scale))
+            break;
+    }
 
-	const float start = _offset.x - _deletedSpace;
-	const float end = _precision + _offset.x - _deletedSpace + _screenSize.x;
-	const float step = _precision; //_scale;
+    const float start = _offset.x - _deletedSpace;
+    const float end   = _precision + _offset.x - _deletedSpace + _screenSize.x;
+    const float step  = _precision; //_scale;
 
-	// todo : lol pas propre
-	for (float i = start; i < end; i += step)
-	{
-		_buffer.push_back(GetIPoint(i));
-	}
+    // todo : lol pas propre
+    for (float i = start; i < end; i += step)
+    {
+        _buffer.push_back(GetIPoint(i));
+    }
 
-	if (_offset.x - _deletedSpace > _zones[0].size.x)
-	{
-		_deletedSpace += _zones[0].size.x;
-		_zones.pop_front();
-		AddZone();
-	}
+    if (_offset.x - _deletedSpace > _zones[0].size.x)
+    {
+        _deletedSpace += _zones[0].size.x;
+        _zones.pop_front();
+        AddZone();
+    }
 }
 
 void Map::AddZone()
 {
-	if (_zones.empty())
-	{
-		const float height = _screenSize.y;
-		Vector2   start{ 0, height - (height / 3.f) };
+    if (_zones.empty())
+    {
+        const float height = _screenSize.y;
+        Vector2     start{0, height - (height / 3.f)};
 
-		_zones.emplace_back(_currentType, start, (bool)GetRandomValue(0, 1), _precision);
-		_zones.emplace_back(_currentType, _zones.back().p2, (bool)GetRandomValue(0, 1), _precision);
-		return;
-	}
+        _zones.emplace_back(_currentType, start, (bool)GetRandomValue(0, 1), _precision);
+        _zones.emplace_back(_currentType, _zones.back().p2, (bool)GetRandomValue(0, 1), _precision);
+        return;
+    }
 
-	/* Orientation */
-	bool orientation = (bool)GetRandomValue(0, 1);
-	// Do not repeat an orientation more than twice
-	unsigned long size = _zones.size();
-	if ((_zones[size - 2].sens == orientation) && (_zones[size - 1].sens == orientation))
-		orientation = !orientation;
+    /* Orientation */
+    bool orientation = (bool)GetRandomValue(0, 1);
+    // Do not repeat an orientation more than twice
+    unsigned long size = _zones.size();
+    if ((_zones[size - 2].sens == orientation) && (_zones[size - 1].sens == orientation))
+        orientation = !orientation;
 
-	_zones.emplace_back(_currentType, _zones.back().p2, orientation, _precision);
+    _zones.emplace_back(_currentType, _zones.back().p2, orientation, _precision);
 }
 void Map::Update(float DeltaTime)
 {
-	_offset.x += _player._speed * DeltaTime;
+    _offset.x += _player._speed * DeltaTime;
 }
 
 float Map::GetIPoint(float position)
 {
-	const int   from = floor(position);
-	const int   to = ceil(position);
-	const float fract = position - (float)from;
+    const int   from  = floor(position);
+    const int   to    = ceil(position);
+    const float fract = position - (float)from;
 
-	return Lerp(_allPoints[from], _allPoints[to], fract);
+    return Lerp(_allPoints[from], _allPoints[to], fract);
 }
