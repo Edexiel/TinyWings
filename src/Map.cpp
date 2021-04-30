@@ -1,6 +1,6 @@
 #include "Map.hpp"
-#include "Function.hpp"
 //#include "Functions.hpp"
+#include "Function.hpp"
 #include <iostream>
 
 using namespace Tinywings;
@@ -21,26 +21,28 @@ Zone::Zone(F_TYPE functionType, Vector2& start, bool orientation, float precisio
     p1 = start;
     p2 = Vector2{p1.x + size.x, p1.y + size.y};
 
-    Function function;
+    Function function2;
+
+    function = &function2;
 
     switch (functionType)
     {
 
     case F_TYPE::E_SIN:
-        function.Create(p1, p2, precision, functionType, 1);
-        heightPoints = function.pts;
+        function->Create(p1, p2, precision, functionType, 1);
+        heightPoints = function->pts;
         break;
     case F_TYPE::E_POLY:
-        function.Create(p1, p2, precision, functionType);
-        heightPoints = function.pts;
+        function->Create(p1, p2, precision, functionType);
+        heightPoints = function->pts;
         break;
     case F_TYPE::E_ELLI:
-        function.Create(p1, p2, precision, functionType);
-        heightPoints = function.pts;
+        function->Create(p1, p2, precision, functionType);
+        heightPoints = function->pts;
         break;
     case F_TYPE::E_HYP:
-        function.Create(p1, p2, precision, functionType);
-        heightPoints = function.pts;
+        function->Create(p1, p2, precision, functionType);
+        heightPoints = function->pts;
         break;
     }
 

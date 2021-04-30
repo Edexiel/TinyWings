@@ -9,17 +9,21 @@
 #include "raylib.h"
 #include <deque>
 #include <vector>
+//#include "Function.hpp"
 
 #define MAX_ZONES 100
-#define NB_POINTS 1024
+#define NB_POINTS 512
 #define INIT_ZONES_NB 100
 #define ZONE_MIN_WIDTH 15  // in fraction of the screen , 10 -> 1/10 width
 #define ZONE_MAX_WIDTH 5   // in fraction of the screen , 10 -> 1/10 width
 #define ZONE_MIN_HEIGHT 15 // in fraction of the screen , 10 -> 1/10 height
 #define ZONE_MAX_HEIGHT 10 // in fraction of the screen , 10 -> 1/10 height
 
+
 namespace Tinywings
 {
+    class Function;
+
     enum class F_TYPE
     {
         E_SIN,
@@ -35,6 +39,7 @@ namespace Tinywings
         Vector2 size;
         std::vector<float> heightPoints;
         std::vector<Vector2> points;
+        Function* function;
 
         bool sens;     //true : RED ascendant //false : GREEN Descendant
 
@@ -48,9 +53,9 @@ namespace Tinywings
     class Map
     {
     private:
-        std::deque<Zone> _zones;
         Camera2D *_camera2D;
     public:
+        std::deque<Zone> _zones;
         float speed;
         Vector2 offset{0, 0};
 

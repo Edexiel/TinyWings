@@ -22,7 +22,7 @@ int main()
     // SetConfigFlags(FLAG_MSAA_4X_HINT);
 
     InitWindow((int)screenSize.x, (int)screenSize.y, "TinyWings");
-    SetTargetFPS(0);
+    SetTargetFPS(0); 
 
     RenderTexture2D mapTexture = LoadRenderTexture((int)screenSize.x, (int)screenSize.y);
     Shader          shaderMap  = LoadShader(nullptr, TextFormat("../../../assets/shader/map.fs", GLSL_VERSION));
@@ -42,7 +42,7 @@ int main()
     camera.rotation = 0.0f;
     camera.zoom     = 1.f;
 
-    Map map{precision, &camera};
+    Map map{precision, &camera}; 
 
     SetupRLImGui(true);
 
@@ -50,7 +50,7 @@ int main()
     {
         float deltaTime = GetFrameTime();
 
-        player.Update(deltaTime);
+        player.Update(deltaTime, map);
 
         BeginDrawing();
 
