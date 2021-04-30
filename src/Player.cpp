@@ -14,6 +14,7 @@ Player::Player(const Vector2& position, float scale) : _position(position), _sca
 
 void Player::Update(float deltaTime)
 {
+    return;
     if (_position.y <= 0 /*function.y*/)
     {
         _position.y = 0 /*function.y*/;

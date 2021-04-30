@@ -9,3 +9,9 @@
 - quels sont les bugs connus?
 
 - quelques pistes d’amélioration ou d’optimisation du jeu proposez-vous ?
+
+
+todo :
+
+pour un x donné, si le x est pas entier, faire un lerp entre les deux valeurs les plus proche pour le _buffer
+allouer des nouveaux blocks

@@ -10,7 +10,7 @@
 class Player
 {
 
-private:
+public:
     // float _mass=1;
     float     _scale                 = {1.f};
     float     _rotation              = {0.f};
