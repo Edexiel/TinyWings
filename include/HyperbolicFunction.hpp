@@ -12,44 +12,53 @@ namespace Tinywings
 class HyperbolicFunction : public Function
 {
 public:
-    inline std::vector<float> Create(float x1, float x2, float y1, float y2, float precision) noexcept;
-    inline std::vector<float> Create(const Vector2& p1, const Vector2& p2, float precision) noexcept;
-};
+    HyperbolicFunction(float x1, float x2, float y1, float y2, float precision);
+    virtual ~HyperbolicFunction() = default;
 
-std::vector<float> HyperbolicFunction::Create(float x1, float x2, float y1, float y2, float precision) noexcept
-{
-    float a     = y1 + ((y2 - y1) / 2.f);
-    float b     = x1 + ((x2 - x1) / 2.f);
-    float k     = (-10.f / (x2 - x1));
-    float k1    = (y2 - y1) / 2.f;
-    float alpha = 1.4f;
+    float a;
+    float b;
+    float k;
+    float k1;
+    float alpha;
 
-    auto expo = [&](float x) { return exp(alpha * k * (x - b)); };
+    float expo(float x)
+    {
+        return exp(alpha * k * (x - b));
+    }
 
-    fx = [&](float x) { return (a + k1 * ((1.f - expo(x)) / (1.f + expo(x)))); };
+    float image(float x) final
+    {
+        return (a + k1 * ((1.f - expo(x)) / (1.f + expo(x))));
+    }
 
-    deriv1fx = [&](float x) { return (-(2 * alpha * expo(x) * k * k1) / ((1 + expo(x)) * (1 + expo(x)))); };
-    deriv2fx = [&](float x) {
+    float deriv1(float x) final
+    {
+        return (-(2 * alpha * expo(x) * k * k1) / ((1 + expo(x)) * (1 + expo(x))));
+    }
+
+    float deriv2(float x) final
+    {
         return (
             ((4 * alpha * alpha * k * k * k1 * expo(x) * expo(x)) / ((expo(x) + 1) * (expo(x) + 1) * (expo(x) + 1))) -
             ((2 * alpha * alpha * k * k * k1 * expo(x)) / (expo(x) + 1) * (expo(x) + 1)));
-    };
+    }
+};
 
-    std::vector<float> table;
-    float              i = 0.f;
+HyperbolicFunction::HyperbolicFunction(float x1, float x2, float y1, float y2, float precision) : Function(y1, y2)
+{
+    a     = y1 + ((y2 - y1) / 2.f);
+    b     = x1 + ((x2 - x1) / 2.f);
+    k     = (-10.f / (x2 - x1));
+    k1    = (y2 - y1) / 2.f;
+    alpha = 1.4f;
+
+    float i = 0.f;
     while (x1 + i < x2)
     {
-        table.push_back(fx(x1 + i));
+        pts.push_back(image(x1 + i));
         i += precision;
     }
 
-    table.push_back(fx(x2));
-
-    return table;
-}
-
-std::vector<float> HyperbolicFunction::Create(const Vector2& p1, const Vector2& p2, float precision) noexcept
-{
-    return HyperbolicFunction::Create(p1.x, p2.x, p1.y, p2.y, precision);
+    pts.push_back(image(x2));
 }
 } // namespace Tinywings

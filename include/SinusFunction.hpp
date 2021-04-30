@@ -9,17 +9,39 @@ namespace Tinywings
 class SinusFunction : public Function
 {
 public:
-    inline std::vector<float> Create(float x1, float x2, float y1, float y2, unsigned int n, float precision) noexcept;
-    inline std::vector<float> Create(const Vector2& p1, const Vector2& p2, unsigned int n, float precision) noexcept;
+    SinusFunction(float x1, float x2, float y1, float y2, unsigned int _n, float precision);
+    virtual ~SinusFunction() = default;
+
+    float        pulsation;
+    float        amplitude;
+    float        offset;
+    unsigned int n;
+    float        phase;
+
+    float image(float x) final
+    {
+        return (offset + amplitude * (powf(sinf(pulsation * x + phase), n)));
+    }
+
+    float deriv1(float x) final
+    {
+        return (amplitude * (powf(sinf(pulsation * x + phase + PI / 2), n + 1)));
+    }
+
+    float deriv2(float x) final
+    {
+        return (amplitude * (powf(sinf(pulsation * x + phase + PI / 2), n + 2)));
+    }
+
+    /*sinDeriv = [&](float x, float n1) {
+        return (amplitude * (powf(sinf(pulsation * x + phase + PI / 2), n1)));
+    };*/
 };
 
-std::vector<float> SinusFunction::Create(float x1, float x2, float y1, float y2, unsigned int n,
-                                         float precision) noexcept
+SinusFunction::SinusFunction(float x1, float x2, float y1, float y2, unsigned int _n, float precision)
+    : Function(y1, y2)
 {
-    float pulsation;
-    float amplitude;
-    float offset;
-
+    n                   = _n;
     float tempPulsation = PI / (x2 - x1);
     float tempOffset    = (y1 + y2) / 2;
     float tempAmplitude = tempOffset - y1;
@@ -39,29 +61,15 @@ std::vector<float> SinusFunction::Create(float x1, float x2, float y1, float y2,
         offset    = tempOffset;
     }
 
-    float phase = (PI / 2) - pulsation * x2;
+    phase = (PI / 2) - pulsation * x2;
 
-    fx = [&](float x) { return (offset + amplitude * (powf(sinf(pulsation * x + phase), n))); };
-
-    sinDeriv = [&](float x, float n1) {
-        return (offset + amplitude * (powf(sinf(pulsation * x + phase + PI / 2), n1)));
-    };
-
-    std::vector<float> table;
-    float              i = 0;
+    float i = 0;
     while (i + x1 < x2)
     {
-        table.push_back(fx(x1 + i));
+        pts.push_back(image(x1 + i));
         i += precision;
     }
 
-    table.push_back(fx(x2));
-
-    return table;
-}
-
-std::vector<float> SinusFunction::Create(const Vector2& p1, const Vector2& p2, unsigned int n, float precision) noexcept
-{
-    return SinusFunction::Create(p1.x, p2.x, p1.y, p2.y, n, precision);
+    pts.push_back(image(x2));
 }
 } // namespace Tinywings

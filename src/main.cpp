@@ -1,4 +1,4 @@
-#include "imgui.h"
+﻿#include "imgui.h"
 #include "raylib.h"
 #include "rlImGui.h"
 
@@ -31,7 +31,7 @@ int main()
     int resolutionLoc = GetShaderLocation(shaderMap, "u_resolution");
     int offsetLoc     = GetShaderLocation(shaderMap, "u_offset");
 
-    int precision = 10.f;
+    float precision = 10.f;
 
     Player player{{screenSize.x / 2.f, screenSize.y / 3.f}, 0.25};
 
@@ -53,9 +53,9 @@ int main()
     {
         float deltaTime = GetFrameTime();
 
-        player.Update(deltaTime);
+        player.Update(deltaTime, &map);
         map.Update(deltaTime);
-        //player._scale = map._scale;
+        // player._scale = map._scale;
 
         BeginDrawing();
 
@@ -74,7 +74,7 @@ int main()
             SetShaderValue(shaderMap, offsetLoc, &map._offset, SHADER_UNIFORM_VEC2);
 
             DrawTextureRec(mapTexture.texture,
-                           (Rectangle){0, 0, (float)mapTexture.texture.width, (float)mapTexture.texture.height},
+                           Rectangle{0, 0, (float)mapTexture.texture.width, (float)mapTexture.texture.height},
                            Vector2{0, 0}, WHITE);
             EndShaderMode();
 
@@ -93,13 +93,13 @@ int main()
             //                           WHITE);
 
             player.Draw();
-            //map.DrawDebug();
+            // map.DrawDebug();
             // drawaxis();
         }
 
         // Draw UI
         {
-            DrawText(FormatText("Score : %2i",(int)map._offset.x), 10, screenSize.y - 50, 50, RAYWHITE);
+            DrawText(FormatText("Score : %2i", (int)map._offset.x), 10, screenSize.y - 50, 50, RAYWHITE);
             DrawFPS(10, 10);
         }
         // draw imGUI
@@ -109,9 +109,9 @@ int main()
             // ImGui::DragFloat("Zoom", &camera.zoom, 0.01f, 0.1f, 1.f);
             // ImGui::DragFloat("Player Position", &player._position);
             ImGui::DragFloat("Speed", &player._speed);
-            ImGui::DragInt("Precision", &precision);
+            ImGui::DragFloat("Precision", &precision);
             ImGui::DragFloat2("Offset", &map._offset.x);
-            ImGui::DragFloat("Scale", &map._scale,0.1,0.f,10.f);
+            ImGui::DragFloat("Scale", &map._scale, 0.1, 0.f, 10.f);
             ImGui::DragFloat("Player.x", &player._position.x);
             ImGui::DragFloat("Player.y", &player._position.y);
             ImGui::End();
