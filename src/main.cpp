@@ -6,7 +6,6 @@
 #include "Player.hpp"
 #include <string>
 #include <iostream>
-#include "raymath.h"
 
 using namespace Tinywings;
 
@@ -55,7 +54,6 @@ int main()
 
     bool showdebug=false;
     int function_index=0;
-    F_TYPE functionType;
     std::string functionName[4]{"Sinusoide","Polynomiale","Elliptique","Hyperbolique"};
 
     while (!WindowShouldClose())
@@ -91,7 +89,7 @@ int main()
             SetShaderValue(shaderMap, offsetLoc, &map._offset, SHADER_UNIFORM_VEC2);
 
             DrawTextureRec(mapTexture.texture,
-                           (Rectangle){0, 0, (float)mapTexture.texture.width, (float)mapTexture.texture.height},
+                           Rectangle{0, 0, (float)mapTexture.texture.width, (float)mapTexture.texture.height},
                            Vector2{0, 0}, WHITE);
             EndShaderMode();
 
