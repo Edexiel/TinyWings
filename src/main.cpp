@@ -35,11 +35,11 @@ int main()
 
     Player player{{screenSize.x / 2.f, screenSize.y / 3.f}, 0.25};
 
-    Camera2D camera{0};
-    camera.target = {0, 0};
-    camera.offset = Vector2{0, 0};
-    camera.rotation = 0.0f;
-    camera.zoom = 1.f;
+//    Camera2D camera{0};
+//    camera.target = {0, 0};
+//    camera.offset = Vector2{0, 0};
+//    camera.rotation = 0.0f;
+//    camera.zoom = 1.f;
 
     Map map{precision};
 
@@ -57,7 +57,7 @@ int main()
         {
             //BeginTextureMode(mapTexture2);
 
-            BeginMode2D(camera);
+//            BeginMode2D(camera);
 
             BeginShaderMode(shaderMap);
             map.CreateBuffer();
@@ -78,7 +78,7 @@ int main()
 
             //drawaxis();
 
-            EndMode2D();
+//            EndMode2D();
 
 
             //EndTextureMode();
