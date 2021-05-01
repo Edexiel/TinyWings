@@ -1,4 +1,4 @@
-#ifndef TINYWINGS_MAP_HPP
+﻿#ifndef TINYWINGS_MAP_HPP
 #define TINYWINGS_MAP_HPP
 
 #include "Player.hpp"
@@ -27,10 +27,12 @@ enum class F_TYPE
 
 struct Zone
 {
-    Vector2            p1;
-    Vector2            p2;
-    Vector2            size;
-    std::vector<float> heightPoints;
+    Vector2                   p1;
+    Vector2                   p2;
+    Vector2                   size;
+    std::vector<float>        heightPoints;
+    std::vector<Vector2>      points;
+    std::unique_ptr<Function> function = nullptr;
 
     bool sens; // true : RED ascendant //false : GREEN Descendant
 
@@ -39,17 +41,15 @@ struct Zone
 
 class Map
 {
-private:
-    std::deque<Zone> _zones;
-
 public:
-    float    _scale{1.f};
-    float    _deletedSpace{0.f};
-    Player&  _player;
-    Vector2  _offset{0, 0};
-    Vector2& _screenSize;
-    float    _precision{10.f};
-    F_TYPE   _currentType;
+    std::deque<Zone> _zones;
+    float            _scale{1.f};
+    float            _deletedSpace{0.f};
+    Player&          _player;
+    Vector2          _offset{0, 0};
+    Vector2&         _screenSize;
+    float            _precision{10.f};
+    F_TYPE           _currentType;
 
     std::vector<float> _allPoints;
     std::vector<float> _buffer;

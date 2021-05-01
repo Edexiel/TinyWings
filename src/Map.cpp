@@ -1,6 +1,6 @@
-#include "Map.hpp"
-#include "Function.hpp"
+﻿#include "Map.hpp"
 //#include "Functions.hpp"
+#include "Function.hpp"
 #include "Functions.hpp"
 #include "raymath.h"
 #include <cmath>
@@ -24,29 +24,24 @@ Zone::Zone(F_TYPE functionType, Vector2& start, bool orientation, float precisio
     p1 = start;
     p2 = Vector2{p1.x + size.x, p1.y + size.y};
 
-    Function function;
-
     switch (functionType)
     {
 
     case F_TYPE::E_SIN:
-        function.Create(p1, p2, 1, functionType, 1);
-        heightPoints = function.pts;
+        function = std::make_unique<SinusFunction>(p1.x, p2.x, p1.y, p2.y, 1, 1);
         break;
     case F_TYPE::E_POLY:
-        function.Create(p1, p2, 1, functionType);
-        heightPoints = function.pts;
+        function = std::make_unique<PolyFunction>(p1.x, p2.x, p1.y, p2.y, 1);
         break;
     case F_TYPE::E_ELLI:
-        function.Create(p1, p2, 1, functionType);
-        heightPoints = function.pts;
+        function = std::make_unique<EllipticFunction>(p1.x, p2.x, p1.y, p2.y, 1);
         break;
     case F_TYPE::E_HYP:
-        function.Create(p1, p2, 1, functionType);
-        heightPoints = function.pts;
+        function = std::make_unique<HyperbolicFunction>(p1.x, p2.x, p1.y, p2.y, 1);
         break;
     }
 
+    heightPoints = function->pts;
     //    std::cout << "Width: " << size.x << "  Precision: " << precision << "  Array size : " << heightPoints.size()
     //              << std::endl;
     //
@@ -113,7 +108,7 @@ void Map::AddZone()
     if (_zones.empty())
     {
         const float height = _screenSize.y;
-        Vector2   start{0, height - (height / 3.f)};
+        Vector2     start{0, height - (height / 3.f)};
 
         _zones.emplace_back(_currentType, start, (bool)GetRandomValue(0, 1), _precision);
         _zones.emplace_back(_currentType, _zones.back().p2, (bool)GetRandomValue(0, 1), _precision);

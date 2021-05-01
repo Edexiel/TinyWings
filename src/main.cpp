@@ -1,4 +1,4 @@
-#include "imgui.h"
+﻿#include "imgui.h"
 #include "raylib.h"
 #include "rlImGui.h"
 
@@ -23,7 +23,7 @@ int main()
     // SetConfigFlags(FLAG_MSAA_4X_HINT);
 
     InitWindow((int)screenSize.x, (int)screenSize.y, "TinyWings");
-    SetWindowState(FLAG_WINDOW_RESIZABLE);
+    //SetWindowState(FLAG_WINDOW_RESIZABLE);
     SetTargetFPS(0);
 
     RenderTexture2D mapTexture = LoadRenderTexture((int)screenSize.x, (int)screenSize.y);
@@ -69,7 +69,7 @@ int main()
             mapTexture = LoadRenderTexture((int)screenSize.x,(int)screenSize.y);
         }
 
-        player.Update(deltaTime);
+        player.Update(deltaTime, &map);
         map.Update(deltaTime);
 
         BeginDrawing();
