@@ -9,7 +9,7 @@
 #include <vector>
 
 #define MAX_ZONES 100
-#define NB_POINTS 1024
+#define NB_POINTS 512
 #define INIT_ZONES_NB 25
 #define ZONE_MIN_WIDTH 15  // in fraction of the screen , 10 -> 1/10 width
 #define ZONE_MAX_WIDTH 5   // in fraction of the screen , 10 -> 1/10 width
@@ -18,10 +18,9 @@
 
 namespace Tinywings
 {
-
 enum class F_TYPE
 {
-    E_SIN,
+    E_SIN=0,
     E_POLY,
     E_ELLI,
     E_HYP,
@@ -39,8 +38,6 @@ struct Zone
     bool sens; // true : RED ascendant //false : GREEN Descendant
 
     Zone(F_TYPE, Vector2& start, bool orientation, float precision);
-
-    void DrawZone() const;
 };
 
 class Map

@@ -52,10 +52,6 @@ Zone::Zone(F_TYPE functionType, Vector2& start, bool orientation, float precisio
     //    std::cout << "Stop "<< p2.y << std::endl;
 }
 
-void Zone::DrawZone() const
-{
-    DrawRectangleLines((int)p1.x, (int)p1.y, (int)(p2.x - p1.x), (int)(p2.y - p1.y), sens ? RED : GREEN);
-}
 
 Map::Map(Player& player, Vector2& screenSize, float precision)
     : _player{player}, _screenSize{screenSize}, _precision{precision}
@@ -71,9 +67,9 @@ Map::Map(Player& player, Vector2& screenSize, float precision)
 
 void Map::DrawDebug()
 {
-    for (const auto& item : _zones)
+    for (const auto& i : _zones)
     {
-        item.DrawZone();
+        DrawRectangleLines((int)(i.p1.x - _offset.x), (int)(i.p1.y + _offset.y), (int)i.size.x,(int)i.size.y, i.sens ? RED : GREEN);
     }
 }
 
