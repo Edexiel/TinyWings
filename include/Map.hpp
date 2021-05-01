@@ -1,6 +1,7 @@
 ﻿#ifndef TINYWINGS_MAP_HPP
 #define TINYWINGS_MAP_HPP
 
+#include "Function.hpp"
 #include "Player.hpp"
 #include "common.hpp"
 #include "raylib.h"

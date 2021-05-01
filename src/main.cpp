@@ -139,7 +139,7 @@ int main()
                 map.DrawDebug();
 
             DrawText(FormatText("Score : %2i",(int)map._offset.x), 10, screenSize.y - 65, 50, RAYWHITE);
-            DrawText("<          >", screenSize.x-250, screenSize.y - 75, 50, SKYBLUE);
+            DrawText("<          >", screenSize.x-250, screenSize.y - 75, 50, BLACK);
             DrawText(functionName[function_index].c_str(), screenSize.x-200, screenSize.y - 65, 25, RAYWHITE);
             DrawFPS(10, 10);
             DrawText("F4: show debug",10,screenSize.y - 15,10,RAYWHITE);
